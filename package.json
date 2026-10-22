@@ -1,0 +1,28 @@
+{
+  "name": "org-live",
+  "version": "0.1.0",
+  "description": "A silky org-mode experience for Obsidian: live preview, reading view, and org syntax.",
+  "main": "main.js",
+  "scripts": {
+    "check": "tsc --noEmit --skipLibCheck",
+    "dev": "node esbuild.config.mjs",
+    "build": "npm run check && node esbuild.config.mjs production",
+    "deploy": "npm run build && node scripts/deploy.mjs"
+  },
+  "keywords": [
+    "obsidian",
+    "org-mode",
+    "orgmode"
+  ],
+  "author": "zzeitt",
+  "license": "MIT",
+  "devDependencies": {
+    "@codemirror/commands": "^6.8.1",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/view": "^6.38.1",
+    "@types/node": "^22.15.0",
+    "esbuild": "^0.25.5",
+    "obsidian": "^1.8.7",
+    "typescript": "^5.8.3"
+  }
+}

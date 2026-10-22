@@ -1,0 +1,74 @@
+#+TITLE: Integration Writeup — <Redacted>
+#+AUTHOR: <Author>
+#+DATE: 2026-10-23
+#+TODO: TODO NEXT WAITING | DONE CANCELED
+#+FILETAGS: :writeup:project:
+
+* Summary / 摘要 :writeup:project:
+:PROPERTIES:
+:ID: 2026-10-23-redacted-writeup
+:STATUS: draft
+:OWNER: <Redacted>
+:END:
+DEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-24 Sat>
+
+This is a sanitized example of the writeups we use for engineering reviews. Hostnames, tokens, people and customer names are placeholders such as =example.com=, =<REDACTED_TOKEN>= and =<Team>=.
+
+** TODO Executive summary
+- [X] Confirm scope with <Team>
+- [X] Reproduce the issue in staging
+- [ ] Publish the final writeup
+- [ ] Follow up on the remaining risk
+
+** DONE Key outcomes [#A] :results:
+| Metric | Baseline | After | Delta |
+|--------+----------+-------+-------|
+| p95 latency | 480 ms | 210 ms | -56% |
+| error rate | 2.1% | 0.3% | -86% |
+| deploy time | 18 min | 6 min | -67% |
+
+** WAITING Risks and open questions :risk:
+1. Dependency on <REDACTED_VENDOR> for the rollout window.
+2. The fallback path has only been exercised in staging.
+3. Long links should still wrap on narrow screens: https://example.com/a/very/long/path/that/should/not/break/the/layout/but/might/on/mobile?token=<REDACTED>
+
+*** Code sample
+#+BEGIN_SRC bash
+# Sanitized command from the runbook.
+curl -sS "https://api.example.com/v1/health" -H "Authorization: Bearer <REDACTED_TOKEN>" -H "X-Request-Id: 00000000-0000-0000-0000-000000000000" --retry 3 --retry-delay 1 --max-time 10
+#+END_SRC
+
+#+BEGIN_SRC python
+def redacted_handler(payload: dict, *, dry_run: bool = True) -> dict:
+    """A deliberately long line to verify horizontal scrolling instead of wrapping inside a code block."""
+    return {"ok": True, "dry_run": dry_run, "payload": payload, "message": "this line is intentionally long to make sure the code block does not soft-wrap on desktop or mobile"}
+#+END_SRC
+
+*** Table with alignment
+| Item | Owner  | Status | ETA   | Notes      |
+|------+--------+--------+-------+------------|
+| <l>  | <c>    | <r>    | <c>   | <l>        |
+| API  | <Team> | done   | 10-25 | <REDACTED> |
+| Docs | <Team> | next   | 10-28 | <REDACTED> |
+
+*** Quote and math
+#+BEGIN_QUOTE
+Never paste production credentials into a note. Use <REDACTED> and store the real value in the team secret manager.
+#+END_QUOTE
+
+The retry budget is $3$ attempts, and the backoff formula is:
+
+$$t_n = t_0 \cdot 2^{n-1}$$
+
+** 中文部分 :中文:复盘:
+这是一段中文复盘，包含 *重点*、/术语/、=命令= 和链接 [[https://example.com][示例链接]]。计划时间 <2026-10-25 Sun>。
+
+- [X] 已完成事项
+- [ ] 待办事项
+  - 子事项一
+  - 子事项二
+
+** Footnotes
+A sanitized footnote reference[fn:1].
+
+[fn:1] This is placeholder footnote text; no real customer data.

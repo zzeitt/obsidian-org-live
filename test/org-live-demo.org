@@ -1,0 +1,72 @@
+#+TITLE: Org Live · 视觉测试
+#+AUTHOR: <Author>
+#+TODO: TODO NEXT WAITING | DONE CANCELED 完成
+
+* TODO Welcome to Org Live :demo:org:
+:PROPERTIES:
+:ID: org-live-demo
+:CATEGORY: rendering
+:END:
+DEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-25 Sun>
+
+This is a paragraph with *bold*, /italic/, _underline_, =verbatim=, ~code~ and +strike+ text. It links to [[https://obsidian.md][Obsidian]] and to [[test.org.md][a Markdown note]]. A timestamp <2026-10-22 Thu> sits here. Inline math $E = mc^2$ works too.
+
+Org renders headings, TODO states, priorities, tags and checkboxes the way Markdown feels in Obsidian — no raw markup unless your cursor is in it.
+
+中文排版测试：这是一段中文段落，含 *加粗*、/斜体/、=等宽=，中英文混排应该自然。标签 :中文: 和链接 [[https://example.com][示例]] 也要好看。
+
+** 完成 中文标题 :中文:测试:
+这是中文正文，包含 *加粗* 和 /斜体/，以及一个时间戳 <2026-10-23 Fri>。
+
+** DONE Second headline, done :work:
+- [X] Rendered checkbox
+- [ ] Unchecked task
+- A plain bullet
+  1. Nested ordered item
+  2. Another item
+     - Nested deeper
+*** NEXT [#A] A deeper heading :deep:demo:
+Some body text with ~inline code~ and a footnote[fn:1].
+
+***** Level five heading
+Text under a level five heading.
+
+| Name | Value | Notes |
+|------+-------+-------|
+| one  | 1     | *bold* |
+| two  | 2     | [[https://example.com][link]] |
+| 中文 | 三    | 表格 |
+
+#+BEGIN_SRC js
+function greet(name) {
+  return `hello ${name}`;
+}
+console.log(greet("org"));
+#+END_SRC
+
+#+BEGIN_QUOTE
+Simplicity is prerequisite for reliability.
+— Edsger W. Dijkstra
+#+END_QUOTE
+
+#+BEGIN_EXAMPLE
+raw *not bold* output
+#+END_EXAMPLE
+
+#+BEGIN_CENTER
+Centered text
+#+END_CENTER
+
+-----
+
+# a comment line
+: fixed-width line
+
+** WAITING Waiting for review
+SCHEDULED: <2026-11-01 Sun>
+
+Display math:
+
+$$\int_0^1 x^2\,dx = \frac{1}{3}$$
+
+[fn:1] An inline footnote definition.

@@ -1,0 +1,531 @@
+/* ==========================================================================
+   Org Live
+
+   The view reuses Obsidian's own Markdown/CM6 class names
+   (HyperMD-header-*, cm-header-*, cm-strong, HyperMD-list-line,
+   HyperMD-codeblock, cm-hashtag, task-list-item-checkbox, inline-title, …).
+   That means app CSS and every theme style Org exactly like Markdown.
+
+   This file only provides:
+     • the editor/reading-view shell
+     • Org-only concepts (TODO, priority, planning, drawers, …)
+     • small layout overrides because the editor is embedded directly in the
+       view instead of going through Obsidian's MarkdownView.
+   ========================================================================== */
+
+/* --- Editor shell ------------------------------------------------------- */
+
+.org-view {
+  height: 100%;
+  background: var(--background-primary);
+}
+
+.org-view .org-editor-host {
+  height: 100%;
+  min-height: 0;
+}
+
+.org-view .cm-editor {
+  height: 100%;
+  background: transparent;
+}
+
+.org-view .cm-editor.cm-focused {
+  outline: none;
+}
+
+.org-view .cm-scroller {
+  padding: var(--file-margins);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+/* Obsidian sizes this element for its own .cm-sizer/.cm-contentContainer
+   structure. We embed a plain CM6 editor, so give it a normal width and the
+   same readable line width. */
+.org-view .cm-content {
+  width: 100% !important;
+  flex-basis: auto !important;
+  max-width: var(--file-line-width, 700px);
+  margin: 0 auto;
+  padding: 0 0 20vh;
+}
+
+.org-view .cm-cursor {
+  border-left-color: var(--caret-color, var(--text-normal));
+}
+
+.org-view .cm-selectionBackground,
+.org-view .cm-content ::selection {
+  background: var(--text-selection, rgba(80, 140, 255, 0.3)) !important;
+}
+
+/* Inline title block widget (matches Markdown's inline title). */
+.org-view .org-inline-title {
+  cursor: text;
+}
+
+.org-metadata {
+  cursor: pointer;
+}
+
+.org-metadata .org-properties {
+  margin-top: 0.25em;
+}
+
+/* Org levels 7/8 have no Markdown equivalent; keep them discreet. */
+.org-view .org-level-7,
+.org-view .org-level-8 {
+  font-size: var(--h6-size, 0.95em);
+  font-weight: var(--h6-weight, 600);
+  color: var(--text-muted);
+}
+
+/* --- TODO / priority ---------------------------------------------------- */
+
+.org-todo {
+  display: inline-block;
+  font-family: var(--font-interface);
+  font-size: calc(var(--font-text-size, 16px) * 0.66);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.8;
+  padding: 0 0.45em;
+  border-radius: var(--radius-s, 4px);
+  vertical-align: 0.15em;
+  margin-right: 0.15em;
+  color: #fff;
+  background: var(--color-red, #e5534b);
+}
+
+.org-todo-done {
+  background: var(--color-green, #2ea043);
+  color: #fff;
+}
+
+.org-todo-waiting,
+.org-todo-hold,
+.org-todo-holding,
+.org-todo-blocked {
+  background: var(--color-orange, #d29922);
+}
+
+.org-todo-next,
+.org-todo-started,
+.org-todo-in-progress,
+.org-todo-inprogress {
+  background: var(--color-blue, #3b82f6);
+}
+
+.org-todo-canceled,
+.org-todo-cancelled {
+  background: var(--text-faint, #777);
+}
+
+.org-priority {
+  font-family: var(--font-monospace);
+  font-size: 0.75em;
+  font-weight: 700;
+  color: var(--text-muted);
+  vertical-align: 0.12em;
+  margin-right: 0.15em;
+}
+
+.org-priority.org-priority-a {
+  color: var(--color-red, #e5534b);
+}
+
+.org-priority.org-priority-b {
+  color: var(--color-orange, #d29922);
+}
+
+.org-priority.org-priority-c {
+  color: var(--color-green, #2ea043);
+}
+
+/* Org tags render as Markdown-style #tags; the cm-hashtag/a.tag classes carry
+   all the actual styling. Keep the wrapper inline and stop heading font-size
+   from leaking into the tag. */
+.org-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15em;
+  vertical-align: 0.05em;
+}
+
+.org-tag-chip {
+  display: inline-flex;
+  align-items: center;
+}
+
+.org-heading .org-tag {
+  font-size: var(--font-text-size, 16px);
+}
+
+.org-heading .org-priority {
+  font-size: calc(var(--font-text-size, 16px) * 0.62);
+}
+
+/* Reading view: tags and priorities inherit the headline font-size by
+   default, which makes them huge inside h1/h2. Cap them to body-relative
+   sizes like Obsidian's Markdown tags. */
+.org-preview .org-heading-preview .tag {
+  font-size: calc(var(--font-text-size, 16px) * 0.875);
+  line-height: 1.7;
+  vertical-align: middle;
+}
+
+.org-preview .org-heading-preview .org-priority {
+  font-size: calc(var(--font-text-size, 16px) * 0.7);
+  line-height: 1.7;
+  vertical-align: middle;
+}
+
+.org-preview .org-heading-preview .org-todo {
+  line-height: 1.6;
+  vertical-align: middle;
+}
+
+/* --- Time stamps, planning, cookies, footnotes ------------------------- */
+
+.org-timestamp {
+  font-family: var(--font-monospace);
+  font-size: 0.82em;
+  color: var(--text-accent);
+  background: var(--background-modifier-hover);
+  border-radius: var(--radius-s, 4px);
+  padding: 0 0.3em;
+  white-space: nowrap;
+}
+
+.org-timestamp:not(.is-active) {
+  color: var(--text-muted);
+  background: var(--background-secondary);
+}
+
+.org-planning-line {
+  font-size: 0.86em;
+  color: var(--text-muted);
+}
+
+.org-planning-keyword {
+  font-size: 0.72em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+  margin-right: 0.35em;
+}
+
+.org-cookie {
+  font-family: var(--font-monospace);
+  font-size: 0.82em;
+  color: var(--text-muted);
+}
+
+.org-footnote {
+  color: var(--text-accent);
+  font-size: 0.75em;
+  vertical-align: super;
+  line-height: 0;
+}
+
+.org-math-display {
+  display: block;
+  margin: 0.6em 0;
+  text-align: center;
+}
+
+.org-math-source {
+  color: var(--text-muted);
+  font-family: var(--font-monospace);
+}
+
+.org-inline-image {
+  max-width: 100%;
+  max-height: 420px;
+  border-radius: var(--radius-s, 4px);
+  vertical-align: middle;
+}
+
+/* --- Org blocks: hide the #+BEGIN_/#+END_ marker lines when inactive --- */
+
+.org-view .org-block-marker {
+  color: var(--text-faint);
+  font-family: var(--font-monospace);
+  font-size: 0.78em;
+}
+
+.org-view .org-block-marker-hidden {
+  height: 0 !important;
+  line-height: 0 !important;
+  font-size: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+/* A code block's language flair is absolutely positioned by app CSS; reserve
+   enough height for it so it never overlaps the first code line (especially
+   when code wraps on a narrow mobile viewport). */
+.org-view .cm-line.HyperMD-codeblock-begin {
+  min-height: 2.4em;
+}
+
+.org-view .org-center-body {
+  text-align: center;
+}
+
+.org-view .org-comment-block {
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+/* --- Drawers / property cards ------------------------------------------ */
+
+.org-view .org-drawer-line {
+  font-family: var(--font-monospace);
+  font-size: 0.84em;
+  color: var(--text-muted);
+}
+
+.org-view .org-drawer-marker-hidden {
+  height: 0 !important;
+  line-height: 0 !important;
+  font-size: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.org-properties {
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m, 8px);
+  padding: 0.55em 0.8em;
+  margin: 0.5em 0;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+
+.org-properties-title {
+  font-size: 0.68em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  margin-bottom: 0.35em;
+}
+
+.org-property {
+  display: flex;
+  gap: 0.6em;
+  padding: 0.1em 0;
+  align-items: baseline;
+}
+
+.org-property-key {
+  color: var(--text-muted);
+  min-width: 6em;
+  font-family: var(--font-monospace);
+  font-size: 0.86em;
+}
+
+.org-property-value {
+  color: var(--text-normal);
+  white-space: pre-wrap;
+}
+
+.org-logbook {
+  margin: 0;
+  white-space: pre-wrap;
+  font-size: 0.86em;
+}
+
+/* --- Keywords, comments, fixed width ----------------------------------- */
+
+.org-keyword-line {
+  font-family: var(--font-monospace);
+  font-size: 0.78em;
+  color: var(--text-faint);
+}
+
+.org-keyword-key {
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-right: 0.5em;
+}
+
+.org-comment-line {
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+.org-fixed-width {
+  font-family: var(--font-monospace);
+  font-size: var(--code-size, 0.86em);
+  background: var(--background-secondary);
+  white-space: pre-wrap;
+}
+
+/* Tables rendered as widgets: app/theme styles do the work; just allow wide
+   tables to scroll horizontally. */
+.org-table-widget,
+.org-table-container {
+  margin: 0.8em 0;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Native Markdown tables are 4px/8px with collapsed 1px borders. The live
+   table widget in Obsidian normally gets this from its .table-cell-wrapper
+   structure; our simplified table needs the same cell metrics explicitly. */
+.org-table-widget th,
+.org-table-widget td,
+.org-table-container th,
+.org-table-container td {
+  padding: 4px 8px;
+  border: var(--table-border-width, 1px) solid
+    var(--table-border-color, var(--background-modifier-border));
+  vertical-align: top;
+}
+
+/* Obsidian's live preview wraps code lines (`white-space: break-spaces` in
+   the Markdown view), so do not force `pre` here; it would create a global
+   horizontal scrollbar instead of matching Markdown. */
+
+/* --- Reading view ------------------------------------------------------ */
+
+.org-preview-host {
+  display: none;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.org-view.is-preview-mode .org-editor-host {
+  display: none;
+}
+
+.org-view.is-preview-mode .org-preview-host {
+  display: block;
+}
+
+.org-preview.markdown-preview-view {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.org-preview .markdown-preview-sizer {
+  padding-bottom: 20vh;
+}
+
+.org-preview .org-properties {
+  cursor: default;
+}
+
+.org-preview .org-center {
+  text-align: center;
+}
+
+.org-preview .org-verse,
+.org-preview .org-example {
+  white-space: pre-wrap;
+}
+
+.org-preview .org-planning-line {
+  color: var(--text-muted);
+  font-size: 0.9em;
+  margin: 0.15em 0 0.6em;
+}
+
+.org-preview .org-keyword-line {
+  color: var(--text-faint);
+  font-family: var(--font-monospace);
+  font-size: 0.8em;
+  margin: 0.35em 0;
+}
+
+.org-preview .org-keyword-value {
+  color: var(--text-muted);
+}
+
+.org-preview .org-fixed-width {
+  white-space: pre-wrap;
+}
+
+.org-preview pre {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ==========================================================================
+   Mobile / iOS
+   ========================================================================== */
+
+body.is-mobile .org-view .cm-scroller {
+  padding: var(--file-margins, var(--size-4-4, 16px));
+  padding-bottom: calc(
+    var(--mobile-toolbar-height, 0px) + env(safe-area-inset-bottom, 0px) + 3rem
+  );
+  -webkit-overflow-scrolling: touch;
+}
+
+body.is-mobile .org-view .cm-content {
+  padding-bottom: 0;
+}
+
+body.is-mobile .org-preview.markdown-preview-view {
+  padding: var(--file-margins, var(--size-4-4, 16px));
+  -webkit-overflow-scrolling: touch;
+}
+
+body.is-mobile .org-preview .markdown-preview-sizer {
+  padding-bottom: calc(
+    var(--mobile-toolbar-height, 0px) + env(safe-area-inset-bottom, 0px) + 3rem
+  );
+}
+
+body.is-mobile .org-checkbox,
+body.is-mobile input.org-task-checkbox {
+  min-width: 20px;
+  min-height: 20px;
+}
+
+body.is-mobile .org-checkbox {
+  margin-right: 0.5em;
+}
+
+body.is-mobile .org-tag {
+  min-height: 24px;
+}
+
+body.is-mobile .org-table-widget,
+body.is-mobile .org-table-container {
+  overscroll-behavior-x: contain;
+}
+
+@media (max-width: 700px) {
+  .org-view .cm-content {
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .org-preview .markdown-preview-sizer {
+    max-width: none;
+  }
+
+  .org-table-widget,
+  .org-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (hover: none) {
+  .org-metadata,
+  .org-properties,
+  .org-block-badge,
+  .org-link,
+  .org-tag-chip {
+    cursor: default;
+  }
+}
