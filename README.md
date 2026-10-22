@@ -1,6 +1,6 @@
 # Org Live
 
-[English](README.md) | [中文](README.zh-CN.md)
+[English](README.md) | [中文](README.zh-CN.md) · [GitHub](https://github.com/zzeitt/obsidian-org-live) · [Latest release](https://github.com/zzeitt/obsidian-org-live/releases)
 
 Org Live opens, edits and reads `.org` files natively in Obsidian, with the same live-preview feel as Obsidian's Markdown editor. It does not ship a separate design system: it reuses Obsidian's own Markdown/CM6 classes, so the active theme styles headings, code, tags, tables and links the same way.
 
@@ -44,6 +44,7 @@ Org-only concepts (TODO, priority, planning, drawers/metadata cards, timestamps,
    ```
    zzeitt/obsidian-org-live
    ```
+   On mobile you can also open this URI: `obsidian://brat?plugin=zzeitt/obsidian-org-live`
 3. Enable **Org Live** in Settings → Community plugins.
 4. Disable any other plugin that owns `.org` files (for example **Orgmode cm6**). Only one plugin can own an extension; Org Live registers `.org` itself, so UNITADE is not needed.
 

@@ -1,6 +1,6 @@
 # Org Live
 
-[English](README.md) | [中文](README.zh-CN.md)
+[English](README.md) | [中文](README.zh-CN.md) · [GitHub](https://github.com/zzeitt/obsidian-org-live) · [最新 Release](https://github.com/zzeitt/obsidian-org-live/releases)
 
 Org Live 让 Obsidian 原生打开、编辑和阅读 `.org` 文件，并尽量复用 Obsidian Markdown 的实时预览与阅读视图视觉。它不另造一套视觉系统，而是直接使用 Obsidian 自己的 Markdown/CM6 类名，因此当前主题会以同样的方式渲染标题、代码、标签、表格和链接。
 
@@ -44,6 +44,7 @@ Org 特有概念（TODO、优先级、计划行、抽屉/元数据卡片、时�
    ```
    zzeitt/obsidian-org-live
    ```
+   手机上也可以直接打开：`obsidian://brat?plugin=zzeitt/obsidian-org-live`
 3. 在设置 → 第三方插件中启用 **Org Live**。
 4. 禁用其他接管 `.org` 的插件（例如 **Orgmode cm6**）。一个扩展只能由一个插件拥有；Org Live 已经自己注册 `.org`，不需要 UNITADE。
 
