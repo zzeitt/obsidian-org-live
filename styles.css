@@ -235,6 +235,33 @@
   text-align: center;
 }
 
+.org-view .org-math-block-source {
+  font-family: var(--font-monospace);
+  font-size: var(--code-size, 0.86em);
+  color: var(--text-muted);
+  background: var(--background-secondary);
+  white-space: pre-wrap;
+}
+
+.org-preview .org-math-block {
+  margin: 1em 0;
+  text-align: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.org-preview .org-math-block .math {
+  display: block;
+}
+
+.org-preview .org-math-source-block {
+  font-family: var(--font-monospace);
+  font-size: var(--code-size, 0.86em);
+  color: var(--text-muted);
+  background: var(--background-secondary);
+  white-space: pre-wrap;
+}
+
 .org-math-source {
   color: var(--text-muted);
   font-family: var(--font-monospace);

@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.1 — 2026-10-23
+
+### Fixed
+
+- **LaTeX / Markdown math delimiters now render**:
+  - inline `\(...\)`
+  - display `\[...\]`
+  - multi-line `$$ ... $$`
+  - bare display environments `\begin{align}`, `align*`, `equation`, `equation*`,
+    `gather`, `multline`, `flalign`, `alignat`, `eqnarray`, `displaymath`
+- Multi-line display math is rendered as one block in live preview and reading
+  view. Placing the cursor inside reveals the raw lines for editing; moving away
+  renders the formula again.
+- Added `test/math-formats.org` as a regression corpus.
+
 ## 0.1.0 — 2026-10-23
 
 Initial public beta.

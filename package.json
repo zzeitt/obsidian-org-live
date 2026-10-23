@@ -1,6 +1,6 @@
 {
   "name": "org-live",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A silky org-mode experience for Obsidian: live preview, reading view, and org syntax.",
   "main": "main.js",
   "scripts": {

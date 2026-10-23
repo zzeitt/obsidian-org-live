@@ -188,10 +188,17 @@ alignment markers is treated as column metadata, removed from the data rows and
 applied to every cell. Rules still split header and body rows.
 
 Inline: emphasis, verbatim/code, links (`[[target][desc]]` and `[[target]]`),
-bare URLs, timestamps, footnote references, cookies, math (`$…$`, `$$…$$`),
-and tags. CJK characters count as emphasis boundaries, and tags accept
-Unicode letters/numbers. TODO keywords come from the default set plus
-`#+TODO:`/`#+SEQ_TODO:`/`#+TYP_TODO:` declarations, so Chinese keywords work.
+bare URLs, timestamps, footnote references, cookies, math (`$…$`, `$$…$$`,
+`\(…\)`, `\[…\]`) and tags. CJK characters count as emphasis boundaries, and
+tags accept Unicode letters/numbers. TODO keywords come from the default set
+plus `#+TODO:`/`#+SEQ_TODO:`/`#+TYP_TODO:` declarations, so Chinese keywords
+work.
+
+Display math also accepts multi-line blocks: `$$…$$`, `\[…\]`, multi-line
+`\(…\)`, and bare LaTeX display environments (`align`, `align*`, `equation`,
+`gather`, `multline`, `flalign`, `alignat`, `eqnarray`, `displaymath`). These
+become `math-block` lines with a `MathBlockData` range/latex payload, render as
+one block, and reveal raw lines when the cursor is inside.
 
 Known parser simplifications: line-oriented, no nested blocks, no multiline
 inline math, table cells split on unescaped `|`, tags are recognised at the
@@ -266,7 +273,9 @@ Checks performed:
 - Heading sizes match Markdown h1–h6 because native `HyperMD-header-N` classes
   are used (h1 = 25.888 px, h2 = 23.392 px, h3 = 21.088 px in the test theme).
 - Markdown tags are 14 px; Org heading tags are capped to the same fixed size.
-- Inline math and display math render with MathJax.
+- Inline math and display math render with MathJax, including `\(...\)`,
+  `\[...\]`, multi-line `$$...$$` and bare `\begin{align}`/`equation`/`gather`
+  environments. Cursor-inside reveals the raw math block for editing.
 - Code blocks use the same Prism tokens/colors as Markdown reading view.
 - Table, list, task and quote visuals match the Markdown reference.
 - Checkbox toggling in live and reading modes edits and saves the file.
@@ -289,8 +298,8 @@ Checks performed:
 - Editing table cells in place.
 - Optional metadata-cache bridge if Obsidian exposes an API for non-Markdown
   links/tags/headings.
-- More complete Org: `#+INCLUDE`, macros, multiline math, footnotes section,
-  tags/links in tables, org-protocol.
+- More complete Org: `#+INCLUDE`, macros, footnote sections, tags/links in
+  tables, org-protocol.
 - Inline syntax highlighting in source blocks for languages Prism doesn't
   know.
 - Real iPhone/iPad testing via BRAT; WKWebView keyboard and selection details.

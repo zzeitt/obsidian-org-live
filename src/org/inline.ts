@@ -107,6 +107,23 @@ export function parseInline(text: string, base: number, options: InlineOptions =
       tokens.push({ type: "math", from, to, latex: m[1], display: true });
       protectedRanges.push({ from, to });
     }
+    // LaTeX-style delimiters used by Markdown/LaTeX notes.
+    const parenRe = /\\\(([^\n]*?)\\\)/g;
+    while ((m = parenRe.exec(text))) {
+      const from = base + m.index;
+      const to = from + m[0].length;
+      if (overlaps(from, to, protectedRanges)) continue;
+      tokens.push({ type: "math", from, to, latex: m[1], display: false });
+      protectedRanges.push({ from, to });
+    }
+    const bracketRe = /\\\[([^\n]*?)\\\]/g;
+    while ((m = bracketRe.exec(text))) {
+      const from = base + m.index;
+      const to = from + m[0].length;
+      if (overlaps(from, to, protectedRanges)) continue;
+      tokens.push({ type: "math", from, to, latex: m[1], display: true });
+      protectedRanges.push({ from, to });
+    }
     const inlineRe = /\$([^\s$][^$\n]*?[^\s$]|[^\s$])\$/g;
     while ((m = inlineRe.exec(text))) {
       const from = base + m.index;

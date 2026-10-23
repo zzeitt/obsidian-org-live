@@ -30,13 +30,12 @@ if (fs.existsSync(communityPath) && !fs.existsSync(backupPath)) {
 }
 fs.writeFileSync(communityPath, JSON.stringify(["org-live"], null, 2) + "\n");
 
-for (const name of ["org-live-demo.org", "writeup-redacted.org"]) {
-  const source = path.join(root, "test", name);
-  if (fs.existsSync(source)) {
-    const destination = path.join(vault, name);
-    fs.copyFileSync(source, destination);
-    console.log(`Copied ${name}`);
-  }
+const testDir = path.join(root, "test");
+for (const name of fs.readdirSync(testDir).filter((file) => /\.(org|md)$/.test(file))) {
+  const source = path.join(testDir, name);
+  const destination = path.join(vault, name);
+  fs.copyFileSync(source, destination);
+  console.log(`Copied ${name}`);
 }
 
 console.log(`Deployed org-live to ${pluginDir}`);

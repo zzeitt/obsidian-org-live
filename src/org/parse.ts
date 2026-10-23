@@ -41,7 +41,8 @@ export type LineKind =
   | "comment"
   | "keyword"
   | "rule"
-  | "fixed-width";
+  | "fixed-width"
+  | "math-block";
 
 export interface TagSpan {
   /** Tag name without colons. */
@@ -118,6 +119,18 @@ export interface DrawerData {
   endLine?: number;
 }
 
+export interface MathBlockData {
+  id: number;
+  startLine: number;
+  endLine: number;
+  from: number;
+  to: number;
+  latex: string;
+  display: boolean;
+  kind: "env" | "dollar" | "bracket" | "paren";
+  env?: string;
+}
+
 export interface OrgLine {
   /** Zero-based line index. */
   index: number;
@@ -131,6 +144,7 @@ export interface OrgLine {
   block?: BlockData;
   table?: TableData;
   drawer?: DrawerData;
+  mathBlock?: MathBlockData;
   /** True for the first/last content line inside a block. */
   blockFirst?: boolean;
   blockLast?: boolean;
@@ -141,6 +155,7 @@ export interface OrgDoc {
   blocks: BlockData[];
   tables: TableData[];
   drawers: DrawerData[];
+  mathBlocks: MathBlockData[];
   todoActive: Set<string>;
   todoDone: Set<string>;
   title?: string;
@@ -175,6 +190,44 @@ function isUpperDrawerName(name: string): boolean {
   return /^[A-Z][A-Z0-9_-]*$/.test(name);
 }
 
+const DISPLAY_MATH_ENV =
+  /^\s*\\begin\{(align\*?|equation\*?|gather\*?|multline\*?|flalign\*?|alignat\*?|eqnarray\*?|displaymath|math)\}/;
+
+type MathStart = Pick<MathBlockData, "kind" | "env">;
+
+/** Detect display-math delimiters that live outside Org's usual $...$. */
+function detectMathBlockStart(raw: string): MathStart | null {
+  const env = DISPLAY_MATH_ENV.exec(raw);
+  if (env) return { kind: "env", env: env[1] };
+
+  const trimmed = raw.trimStart();
+  if (trimmed.startsWith("$$") && !trimmed.slice(2).includes("$$")) {
+    return { kind: "dollar" };
+  }
+  if (trimmed.startsWith("\\[") && !trimmed.slice(2).includes("\\]")) {
+    return { kind: "bracket" };
+  }
+  if (trimmed.startsWith("\\(") && !trimmed.slice(2).includes("\\)")) {
+    return { kind: "paren" };
+  }
+  return null;
+}
+
+function mathBlockEnds(raw: string, block: MathBlockData): boolean {
+  switch (block.kind) {
+    case "env":
+      return block.env
+        ? new RegExp(`\\\\end\\{${block.env.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\}`).test(raw)
+        : false;
+    case "dollar":
+      return raw.includes("$$");
+    case "bracket":
+      return raw.includes("\\]");
+    case "paren":
+      return raw.includes("\\)");
+  }
+}
+
 /**
  * Parse an entire document. Structural parsing is cheap; inline parsing is
  * deliberately left to `parseInline` and performed lazily for visible lines.
@@ -204,6 +257,8 @@ export function parseOrgDoc(source: string): OrgDoc {
   let drawer: DrawerData | undefined;
   let table: TableData | undefined;
   let tableLines: OrgLine[] = [];
+  const mathBlocks: MathBlockData[] = [];
+  let mathBlock: MathBlockData | undefined;
 
   const finishTable = () => {
     if (!table) return;
@@ -222,6 +277,38 @@ export function parseOrgDoc(source: string): OrgDoc {
     tableLines = [];
   };
 
+  const finishMathBlock = (endLine: number) => {
+    if (!mathBlock) return;
+    const current = mathBlock;
+    current.endLine = endLine;
+    const first = lines[current.startLine];
+    const last = lines[endLine];
+    if (first) current.from = first.from;
+    if (last) current.to = last.to;
+
+    const full = lines
+      .slice(current.startLine, endLine + 1)
+      .map((line) => line.text)
+      .join("\n");
+    let latex = full.trim();
+    if (current.kind === "dollar") {
+      const open = full.indexOf("$$");
+      const close = full.lastIndexOf("$$");
+      if (open >= 0 && close > open) latex = full.slice(open + 2, close).trim();
+    } else if (current.kind === "bracket") {
+      const open = full.indexOf("\\[");
+      const close = full.lastIndexOf("\\]");
+      if (open >= 0 && close > open) latex = full.slice(open + 2, close).trim();
+    } else if (current.kind === "paren") {
+      const open = full.indexOf("\\(");
+      const close = full.lastIndexOf("\\)");
+      if (open >= 0 && close > open) latex = full.slice(open + 2, close).trim();
+    }
+    current.latex = latex;
+    mathBlocks.push(current);
+    mathBlock = undefined;
+  };
+
   for (let index = 0; index < rawLines.length; index++) {
     const rawWithCr = rawLines[index];
     const raw = rawWithCr.endsWith("\r") ? rawWithCr.slice(0, -1) : rawWithCr;
@@ -230,6 +317,15 @@ export function parseOrgDoc(source: string): OrgDoc {
     offset = to + 1; // the newline that split() removed
 
     const line: OrgLine = { index, from, to, text: raw, kind: "text" };
+
+    // --- Multi-line display math -----------------------------------------
+    if (mathBlock) {
+      line.kind = "math-block";
+      line.mathBlock = mathBlock;
+      lines.push(line);
+      if (mathBlockEnds(raw, mathBlock)) finishMathBlock(index);
+      continue;
+    }
 
     // --- Inside a block ---------------------------------------------------
     if (block) {
@@ -320,6 +416,31 @@ export function parseOrgDoc(source: string): OrgDoc {
       continue;
     }
     if (table) finishTable();
+
+    // --- Display math (LaTeX delimiters and bare environments) ----------
+    {
+      const mathStart = detectMathBlockStart(raw);
+      if (mathStart) {
+        mathBlock = {
+          id: mathBlocks.length,
+          startLine: index,
+          endLine: index,
+          from,
+          to,
+          latex: "",
+          display: true,
+          kind: mathStart.kind,
+          env: mathStart.env,
+        };
+        line.kind = "math-block";
+        line.mathBlock = mathBlock;
+        lines.push(line);
+        if (mathStart.kind === "env" && mathBlockEnds(raw, mathBlock)) {
+          finishMathBlock(index);
+        }
+        continue;
+      }
+    }
 
     // --- Blank ------------------------------------------------------------
     if (raw.trim() === "") {
@@ -458,12 +579,14 @@ export function parseOrgDoc(source: string): OrgDoc {
     }
   }
   finishTable();
+  if (mathBlock) finishMathBlock(rawLines.length - 1);
 
   return {
     lines,
     blocks,
     tables,
     drawers,
+    mathBlocks,
     todoActive,
     todoDone,
     title,

@@ -12,7 +12,8 @@ Org Live opens, edits and reads `.org` files natively in Obsidian, with the same
 - **Live preview** — raw Org markup is revealed only around the cursor; everything else renders like Markdown.
 - **Reading view** — toggle with the book/pencil action in the view header.
 - **Org structure** — headlines, TODO/custom TODO keywords, priorities, tags, planning lines, property drawers, `#+KEYWORD` metadata, tables, source/quote/example/center/verse blocks, comments, fixed-width text and rules.
-- **Inline syntax** — bold, italic, underline, verbatim, code, strike, links, bare URLs, timestamps, footnote references, cookies and math.
+- **Inline syntax** — bold, italic, underline, verbatim, code, strike, links, bare URLs, timestamps, footnote references and cookies.
+- **Math** — Org `$...$` / `$$...$$`, LaTeX `\(...\)` / `\[...\]`, and bare display environments (`\begin{align}`, `equation`, `gather`, `multline`, `alignat`, `eqnarray`), including multi-line blocks. Edit the raw lines by placing the cursor inside; move away to render again.
 - **Interactions** — clickable checkboxes that save, internal links, tag search, table-cell click-to-edit, TODO cycling, list continuation and indentation.
 - **Bilingual settings** — Automatic / English / 中文. Command names and view-action labels update immediately.
 - **Mobile ready** — `isDesktopOnly: false`, native selection on iOS, safe-area/toolbar padding, touch-sized checkboxes, horizontally scrollable tables and Markdown-style code wrapping.

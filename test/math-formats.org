@@ -1,0 +1,35 @@
+#+TITLE: Math formats / 数学格式
+
+* Bare align environment
+\begin{align}
+23 &= 2.3\times 10^{1} \leftarrow \text{normalized} \\
+   &= 0.23\times 10^{2} \\
+   &= 0.023\times 10^{3} \\
+   &= \dots
+\end{align}
+
+* Inline LaTeX delimiters
+当 \(\beta=2\) 时，公式 \((23)_{10}=(10111)_{2}\) 应该渲染。
+
+* Multi-line paren display
+\(
+(23)_{10}=(10111)_{2}=(1.0111)_{2}\times 2^{4}
+\) 。
+
+* Bracket display
+\[
+(23)_{10}=(10111)_{2}
+\]
+
+* Dollar multiline
+$$
+a^2 + b^2 = c^2
+$$
+
+* Dollar same line
+Inline $E = mc^2$ and $$E = mc^2$$ both render.
+
+* Equation environment
+\begin{equation}
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+\end{equation}

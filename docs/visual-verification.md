@@ -16,6 +16,9 @@ Enabled community plugins: **org-live only** (`orgmode-cm6` disabled; no UNITADE
   property drawer, aligned 5-column table, long URL, long code lines, quote,
   math, Chinese section, nested tasks, footnote. All names/hosts/tokens are
   placeholders.
+- `test/math-formats.org` — bare `\begin{align}`, inline `\(...\)`, multi-line
+  `\(...\)`, `\[...\]`, multi-line `$$...$$`, same-line `$...$`/`$$...$$`, and
+  an `equation` environment.
 
 The files are copied to the vault by `scripts/deploy.mjs`.
 
@@ -61,6 +64,9 @@ The files are copied to the vault by `scripts/deploy.mjs`.
 | `shots/writeup-table.png` | Alignment row applied, no stray row |
 | `shots/writeup-reading-top.png` | Sanitized writeup reading view |
 | `shots/writeup-reading-bottom.png` | Chinese tasks/footnote section |
+| `shots/math-live-top.png` | Bare `align` environment in live preview |
+| `shots/math-live-inline.png` | Inline `\(...\)` and multi-line math section |
+| `shots/math-reading-top.png` | Reading view: `align` + inline LaTeX delimiters |
 
 ## Measurements against native Markdown
 
@@ -99,6 +105,8 @@ Performed through CDP against the real app:
 | Mobile live preview | 390 px content width, metadata/heading/body reflow, 20 px checkbox targets |
 | Mobile code block | long code wraps without a global horizontal scrollbar; flair no longer overlaps |
 | Mobile tables | 5-column table: container 306 px client / 367 px scroll width in live, 306/359 in reading; horizontal scroll works |
+| Math formats | `test/math-formats.org`: 9 MathJax containers in live and reading; 5 block-math widgets; `\begin{align}`, `\(...\)`, multi-line `\(...\)`, `\[...\]`, multiline `$$`, `equation` all render |
+| Math editing | cursor inside the align block → math widget removed, 6 raw source lines visible; cursor away → widget restored |
 | Console | no exceptions on load or interactions |
 
 ## Bilingual settings verification
@@ -168,6 +176,10 @@ viewport and mobile CSS, not WKWebView keyboard behaviour.
 9. **Forced code no-wrap caused a global horizontal scrollbar.** Obsidian's
    Markdown live preview wraps code (`white-space: break-spaces`), so the
    override was removed and the editor keeps a vertical scrollbar only.
+10. **LaTeX/Markdown math delimiters were not recognized.** Only Org `$...$`
+    and same-line `$$...$$` worked. Added inline `\(...\)`/`\[...\]` and
+    multi-line/block math (`$$`, `\[...\]`, multi-line `\(...\)`, bare
+    `\begin{align}`/`equation`/`gather`/`multline`/`alignat`/`eqnarray`).
 
 ## Notes / limitations confirmed visually
 

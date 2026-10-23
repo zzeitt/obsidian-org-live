@@ -105,6 +105,18 @@ async function evaluate(expression) {
   return response.result?.result?.value;
 }
 
+const expectedVault = arg("expect-vault");
+if (expectedVault) {
+  const actualVault = await evaluate("app.vault.getName()");
+  if (actualVault !== expectedVault) {
+    console.error(
+      `Refusing to operate: expected vault "${expectedVault}", but Obsidian has "${actualVault}" open.`
+    );
+    socket.close();
+    process.exit(1);
+  }
+}
+
 const targetPath = arg("open");
 if (targetPath) {
   const opened = await evaluate(`(async () => {

@@ -734,9 +734,14 @@ function buildDecorations(
     }
   }
 
+  const startsWithBlockWidget =
+    doc.mathBlocks.some((block) => block.startLine === 0) ||
+    doc.tables.some((table) => table.startLine === 0) ||
+    doc.drawers.some((drawer) => drawer.startLine === 0);
+
   // Inline title, exactly like Obsidian's Markdown editor. When a metadata
   // card is present it carries the title, avoiding overlapping block widgets.
-  if (title && !titleInMetadataCard) {
+  if (title && !titleInMetadataCard && !startsWithBlockWidget) {
     ranges.push(
       Decoration.widget({
         widget: new InlineTitleWidget(title, 0),
@@ -744,6 +749,24 @@ function buildDecorations(
         side: -1,
       }).range(0)
     );
+  }
+
+  // Multi-line display math (bare LaTeX environments, $$ blocks, \[...\], and
+  // multi-line \(...\)). Reveal the raw lines when the cursor is inside.
+  if (settings.renderMath) {
+    for (const block of doc.mathBlocks) {
+      const first = doc.lines[block.startLine];
+      const last = doc.lines[block.endLine];
+      if (!first || !last) continue;
+      if (selectionTouches(selection, block.from, block.to)) continue;
+      ranges.push(
+        Decoration.replace({
+          widget: new MathWidget(block.latex, true),
+          block: true,
+        }).range(first.from, last.to)
+      );
+      for (let i = block.startLine; i <= block.endLine; i++) skipped.add(i);
+    }
   }
 
   // Tables and property drawers are replaced as whole blocks when the cursor
@@ -915,6 +938,13 @@ function buildDecorations(
             );
           }
         }
+        break;
+      }
+
+      case "math-block": {
+        ranges.push(
+          Decoration.line({ class: "org-line org-math-block-source" }).range(line.from)
+        );
         break;
       }
 

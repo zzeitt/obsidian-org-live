@@ -361,6 +361,22 @@ export function renderOrgPreview(
         i = (line.drawer?.endLine ?? line.index) + 1;
         break;
       }
+      case "math-block": {
+        const block = line.mathBlock;
+        if (block && block.startLine === line.index) {
+          if (options.settings.renderMath) {
+            html += `<div class="org-math-block"><span class="math org-math org-math-display" data-latex="${escapeHtml(
+              block.latex
+            )}" data-display="true"></span></div>`;
+          } else {
+            html += `<pre class="org-math-source-block">${escapeHtml(block.latex)}</pre>`;
+          }
+          i = block.endLine + 1;
+        } else {
+          i++;
+        }
+        break;
+      }
       case "planning":
         html += `<div class="org-planning-line">${inline(line.text, line.from, inlineOpts)}</div>`;
         i++;
