@@ -8,6 +8,8 @@ import {
 } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, WidgetType } from "@codemirror/view";
 import { App, finishRenderMath, loadMathJax, renderMath } from "obsidian";
+import { foldEffect, unfoldEffect } from "@codemirror/language";
+import { OrgFoldInfo, orgFoldForLine } from "./fold";
 import { BlockType, OrgDoc, OrgLine, TableData, parseOrgDoc } from "../org/parse";
 import { InlineToken, parseInline } from "../org/inline";
 import { highlightCode } from "../org/highlight";
@@ -291,26 +293,61 @@ class RuleWidget extends WidgetType {
 }
 
 class CodeFlairWidget extends WidgetType {
-  constructor(readonly lang: string | undefined, readonly lineFrom: number) {
+  constructor(
+    readonly lang: string | undefined,
+    readonly lineFrom: number,
+    readonly fold?: OrgFoldInfo
+  ) {
     super();
   }
 
   eq(other: CodeFlairWidget): boolean {
-    return other.lang === this.lang;
+    return (
+      other.lang === this.lang &&
+      other.fold?.from === this.fold?.from &&
+      other.fold?.to === this.fold?.to &&
+      other.fold?.folded === this.fold?.folded
+    );
   }
 
   toDOM(view: EditorView): HTMLElement {
-    const span = document.createElement("span");
-    span.className = "code-block-flair";
-    span.textContent = this.lang || "SRC";
-    span.title = "Show the Org block markers";
-    span.addEventListener("click", (event) => {
+    const wrapper = document.createElement("span");
+    wrapper.className = "org-src-header";
+
+    if (this.fold) {
+      const toggle = document.createElement("span");
+      toggle.className = `org-fold-indicator org-fold-indicator-src${
+        this.fold.folded ? " is-folded" : ""
+      }`;
+      toggle.textContent = this.fold.folded ? "▸" : "▾";
+      toggle.title = this.fold.folded ? "Unfold code block" : "Fold code block";
+      toggle.setAttribute("role", "button");
+      toggle.setAttribute("aria-label", toggle.title);
+      toggle.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const effect = this.fold?.folded
+          ? unfoldEffect.of({ from: this.fold.from, to: this.fold.to })
+          : foldEffect.of({ from: this.fold!.from, to: this.fold!.to });
+        view.dispatch({ effects: effect });
+        view.focus();
+      });
+      wrapper.appendChild(toggle);
+    }
+
+    const flair = document.createElement("span");
+    flair.className = "code-block-flair";
+    flair.textContent = this.lang || "SRC";
+    flair.title = "Show the Org block markers";
+    wrapper.appendChild(flair);
+
+    wrapper.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
       view.dispatch({ selection: { anchor: this.lineFrom } });
       view.focus();
     });
-    return span;
+    return wrapper;
   }
 
   ignoreEvent(): boolean {
@@ -978,7 +1015,11 @@ function buildDecorations(
           if (!active) {
             ranges.push(
               Decoration.replace({
-                widget: new CodeFlairWidget(block.lang, line.from),
+                widget: new CodeFlairWidget(
+                  block.lang,
+                  line.from,
+                  orgFoldForLine(state, line.index) ?? undefined
+                ),
               }).range(line.from, line.to)
             );
           }
@@ -1193,7 +1234,15 @@ export function orgLivePreview(options: LivePreviewOptions) {
     },
     update(value, transaction) {
       const forced = transaction.effects.some((effect) => effect.is(refreshOrgPreview));
-      if (transaction.docChanged || transaction.selection !== undefined || forced) {
+      const foldChanged = transaction.effects.some(
+        (effect) => effect.is(foldEffect) || effect.is(unfoldEffect)
+      );
+      if (
+        transaction.docChanged ||
+        transaction.selection !== undefined ||
+        forced ||
+        foldChanged
+      ) {
         return buildDecorations(transaction.state, options, docFor(transaction.state.doc));
       }
       return value.map(transaction.changes);

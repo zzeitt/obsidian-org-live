@@ -52,6 +52,9 @@ function buildDecorations(view: EditorView): DecorationSet {
   const ranges = [];
   const visible = view.visibleRanges;
   for (const info of orgFoldableBlocks(view.state)) {
+    // Src blocks put their fold control inside the language-flair header
+    // widget so it cannot be clipped by the full-line replace.
+    if (info.type === "src") continue;
     const line = view.state.doc.line(info.indicatorLine + 1);
     const inView = visible.some((range) => line.to >= range.from && line.from <= range.to);
     if (!inView) continue;

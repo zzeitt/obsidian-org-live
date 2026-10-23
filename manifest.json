@@ -1,7 +1,7 @@
 {
   "id": "org-live",
   "name": "Org Live",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "minAppVersion": "1.8.7",
   "description": "Edit and read Org-mode files with Obsidian-quality live preview and reading view.",
   "author": "zzeitt",

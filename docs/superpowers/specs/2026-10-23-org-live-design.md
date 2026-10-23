@@ -1,7 +1,7 @@
 # Org Live — Design
 
 Date: 2026-10-23
-Status: implemented (v0.2.0)
+Status: implemented (v0.2.1)
 
 ## Intent
 

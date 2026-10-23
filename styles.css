@@ -303,6 +303,12 @@
   color: var(--text-accent);
 }
 
+.org-src-header {
+  display: block;
+  min-height: 1.4em;
+  cursor: text;
+}
+
 /* --- Org blocks: hide the #+BEGIN_/#+END_ marker lines when inactive --- */
 
 .org-view .org-block-marker {

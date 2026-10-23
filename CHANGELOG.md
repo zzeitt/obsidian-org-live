@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.1 — 2026-10-24
+
+### Fixed
+
+- Source-block fold control is now rendered inside the language-flair header
+  widget, so it is not clipped by the full-line replace and is clearly visible
+  when folded.
+- Suppress the expected MathJax “not loaded yet” warning on first render; only
+  real KaTeX/MathJax failures are logged after loading.
+- Preserve Org headline levels above 6 in the core Outline bridge.
+
+### Docs
+
+- Added `docs/community-submission.md` for the new `community.obsidian.md`
+  portal workflow (the old `obsidian-releases` PR route is deprecated).
+
 ## 0.2.0 — 2026-10-24
 
 ### Features
