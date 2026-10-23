@@ -20,6 +20,7 @@ export class OrgView extends TextFileView {
   private livePreviewCompartment = new Compartment();
   private suppressChange = false;
   private pendingPreviewScrollRatio: number | null = null;
+  private outlineTimer: number | null = null;
 
   constructor(leaf: WorkspaceLeaf, private plugin: OrgLivePlugin) {
     super(leaf);
@@ -52,6 +53,7 @@ export class OrgView extends TextFileView {
     this.editorHost = this.contentEl.createDiv({ cls: "org-editor-host" });
     this.previewHost = this.contentEl.createDiv({ cls: "org-preview-host" });
     this.createEditor();
+    this.updateOutline(true);
     this.modeAction = this.addAction(
       "book-open",
       this.plugin.t("action.readingView"),
@@ -65,6 +67,10 @@ export class OrgView extends TextFileView {
   }
 
   protected async onClose(): Promise<void> {
+    if (this.outlineTimer != null) {
+      window.clearTimeout(this.outlineTimer);
+      this.outlineTimer = null;
+    }
     await this.save();
     this.editor?.destroy();
     this.editor = null;
@@ -96,7 +102,23 @@ export class OrgView extends TextFileView {
     if (this.suppressChange) return;
     this.data = this.editor?.state.doc.toString() ?? this.data;
     this.requestSave();
+    this.updateOutline();
     if (this.mode === "preview") this.renderPreview();
+  }
+
+  private updateOutline(immediate = false): void {
+    if (!this.file) return;
+    const run = () => {
+      this.outlineTimer = null;
+      this.plugin.outline?.updateFile(this.file, this.getViewData());
+    };
+    if (immediate) {
+      if (this.outlineTimer != null) window.clearTimeout(this.outlineTimer);
+      run();
+      return;
+    }
+    if (this.outlineTimer != null) window.clearTimeout(this.outlineTimer);
+    this.outlineTimer = window.setTimeout(run, 180);
   }
 
   setViewData(data: string, clear: boolean): void {
@@ -111,6 +133,7 @@ export class OrgView extends TextFileView {
       });
       this.suppressChange = false;
     }
+    this.updateOutline(true);
     if (this.mode === "preview") this.renderPreview();
   }
 
@@ -236,5 +259,34 @@ export class OrgView extends TextFileView {
 
   focusEditor(): void {
     this.editor?.focus();
+  }
+
+  getEphemeralState(): { line: number } {
+    if (!this.editor) return { line: 0 };
+    const line = this.editor.state.doc.lineAt(this.editor.state.selection.main.head).number;
+    return { line: Math.max(0, line - 1) };
+  }
+
+  /** Used by the core Outline view to jump to an Org heading. */
+  setEphemeralState(state: { line?: number }): void {
+    if (typeof state?.line !== "number") return;
+    const targetLine = state.line;
+    if (this.mode === "preview") this.setMode("live");
+
+    const apply = () => {
+      if (!this.editor) return;
+      const number = Math.max(1, Math.min(this.editor.state.doc.lines, targetLine + 1));
+      const from = this.editor.state.doc.line(number).from;
+      this.editor.dispatch({ selection: { anchor: from } });
+      // CM6's scrollIntoView transaction flag can be ignored while the leaf is
+      // being revealed; set the scroller explicitly for deterministic jumps.
+      const block = this.editor.lineBlockAt(from);
+      this.editor.scrollDOM.scrollTop = Math.max(0, block.top - 60);
+      this.editor.focus();
+    };
+
+    apply();
+    requestAnimationFrame(apply);
+    window.setTimeout(apply, 120);
   }
 }

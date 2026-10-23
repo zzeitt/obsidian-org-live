@@ -1,7 +1,7 @@
 # Visual verification — Org Live
 
-Date: 2026-10-23
-Obsidian: 1.14.4 (Electron 39.5.1)
+Date: 2026-10-24
+Obsidian: 1.14.5 (Electron 39.5.1)
 Vault: `<test-vault>`
 Enabled community plugins: **org-live only** (`orgmode-cm6` disabled; no UNITADE needed)
 
@@ -67,6 +67,9 @@ The files are copied to the vault by `scripts/deploy.mjs`.
 | `shots/math-live-top.png` | Bare `align` environment in live preview |
 | `shots/math-live-inline.png` | Inline `\(...\)` and multi-line math section |
 | `shots/math-reading-top.png` | Reading view: `align` + inline LaTeX delimiters |
+| `shots/fold-src.png` | Folded source block with inline chevron, plus quote/example/center fold indicators |
+| `shots/outline-org.png` | Org headlines in Obsidian's core Outline pane, including Chinese titles |
+| `shots/regression-020-reading.png` | 0.2.0 reading-view regression (math, table, tags, tasks, code) |
 
 ## Measurements against native Markdown
 
@@ -107,6 +110,10 @@ Performed through CDP against the real app:
 | Mobile tables | 5-column table: container 306 px client / 367 px scroll width in live, 306/359 in reading; horizontal scroll works |
 | Math formats | `test/math-formats.org`: 9 MathJax containers in live and reading; 5 block-math widgets; `\begin{align}`, `\(...\)`, multi-line `\(...\)`, `\[...\]`, multiline `$$`, `equation` all render |
 | Math editing | cursor inside the align block → math widget removed, 6 raw source lines visible; cursor away → widget restored |
+| Code folding (src) | 64 → 59 visible lines, `▸` indicator, document text length unchanged; click again restores 64 |
+| Code folding (quote) | 64 → 62 visible lines, chevron stays visible at the first content line, restores on unfold |
+| Core Outline | 6 Org headlines with hierarchy/TODO/Chinese; clicking `WAITING` moved to line 65 and scrolled; heading edits updated the outline live |
+| Markdown Outline regression | `markdown-reference.md` still shows Heading one/two/three through the original method |
 | Console | no exceptions on load or interactions |
 
 ## Bilingual settings verification
@@ -194,3 +201,8 @@ viewport and mobile CSS, not WKWebView keyboard behaviour.
 - The settings language switch updates command names through Obsidian's
   command registry; on a future Obsidian version that removes this internal
   map, names would keep the startup language until reload.
+- The core Outline bridge depends on the outline view's private
+  `getHeadings`/`update` methods. It is guarded and delegates Markdown to the
+  original methods, but a future Obsidian version could require a bridge update.
+- Code block folding is inline and view-only; fold state is not persisted
+  across reloads. Headline folding is not implemented.

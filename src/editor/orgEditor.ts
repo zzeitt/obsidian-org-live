@@ -2,7 +2,10 @@ import { App, Platform } from "obsidian";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { Command, EditorView, KeyBinding, drawSelection, keymap } from "@codemirror/view";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+import { codeFolding, foldKeymap, foldService } from "@codemirror/language";
 import { orgLivePreview } from "./livePreview";
+import { orgFoldForLine } from "./fold";
+import { orgFoldIndicators } from "./foldIndicator";
 import { OrgLiveSettings } from "../settings";
 
 const LIST_RE = /^(\s*)([-+*]|\d+[.)])(\s+)(\[[ Xx-]\]\s+)?(.*)$/;
@@ -159,7 +162,13 @@ export function createOrgEditorState(doc: string, options: OrgEditorOptions): Ed
         autocorrect: "off",
         autocapitalize: "off",
       }),
-      keymap.of([...orgKeymap, ...defaultKeymap, ...historyKeymap]),
+      codeFolding(),
+      foldService.of((state, lineStart) => {
+        const info = orgFoldForLine(state, state.doc.lineAt(lineStart).number - 1);
+        return info ? { from: info.from, to: info.to } : null;
+      }),
+      orgFoldIndicators(),
+      keymap.of([...foldKeymap, ...orgKeymap, ...defaultKeymap, ...historyKeymap]),
       options.livePreviewCompartment.of(livePreviewExtension(options)),
       EditorView.updateListener.of((update) => {
         if (update.docChanged) options.onDocChanged();

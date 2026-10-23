@@ -16,11 +16,13 @@ import {
   UiLanguage,
 } from "./i18n";
 import { setPrismInstance } from "./org/highlight";
+import { OrgOutlineBridge } from "./integration/outline";
 import { DEFAULT_SETTINGS, OrgLiveSettings } from "./settings";
 import { OrgView } from "./view/OrgView";
 
 export default class OrgLivePlugin extends Plugin {
   settings: OrgLiveSettings = { ...DEFAULT_SETTINGS };
+  outline!: OrgOutlineBridge;
 
   get uiLanguage(): UiLanguage {
     return resolveLanguage(this.settings.language);
@@ -32,6 +34,9 @@ export default class OrgLivePlugin extends Plugin {
 
   async onload(): Promise<void> {
     await this.loadSettings();
+
+    this.outline = new OrgOutlineBridge(this.app, this);
+    this.outline.start();
 
     this.registerView(VIEW_TYPE_ORG, (leaf) => new OrgView(leaf, this));
 
@@ -89,6 +94,10 @@ export default class OrgLivePlugin extends Plugin {
         }
       })
       .catch((error) => console.warn("Org Live: unable to load MathJax/Prism", error));
+  }
+
+  onunload(): void {
+    this.outline?.destroy();
   }
 
   async loadSettings(): Promise<void> {

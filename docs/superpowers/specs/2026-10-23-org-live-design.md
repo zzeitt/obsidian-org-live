@@ -1,7 +1,7 @@
 # Org Live — Design
 
 Date: 2026-10-23
-Status: implemented (v0.1.0)
+Status: implemented (v0.2.0)
 
 ## Intent
 
@@ -252,6 +252,39 @@ settings tab.
 - Actual iPhone keyboard/selection testing remains a device-level check; this
   repository verifies a 390×844 viewport and mobile CSS.
 
+## Code block folding
+
+- `@codemirror/language` provides `codeFolding()`, `foldService`, `foldKeymap`,
+  `foldEffect`, `unfoldEffect` and `foldedRanges`.
+- `src/editor/fold.ts` computes fold ranges from the Org block parser:
+  - source blocks: indicator on the `#+BEGIN_SRC` line, fold from the end of
+    that line to the end of `#+END_SRC`, leaving the language/flair visible;
+  - quote/example/center/verse/comment/export: indicator on the first content
+    line, fold the content to the end marker, leaving a chevron.
+- `src/editor/foldIndicator.ts` is an inline-only ViewPlugin (allowed by
+  Obsidian's patched CM6) that renders a chevron and dispatches fold effects.
+  A custom inline indicator was chosen over `foldGutter` to match Obsidian's
+  Markdown look instead of adding an editor-side gutter.
+- Folding is view state only; the document text, undo history and saves are
+  unaffected. `foldKeymap` provides the standard keyboard shortcuts.
+
+## Core Outline bridge
+
+- The core Outline view calls `getHeadings()`, which returns `[]` unless
+  `file.extension === "md"`. There is no public API for non-Markdown headings.
+- `src/integration/outline.ts` wraps `getHeadings` and `update` on each outline
+  view instance:
+  - `.org` files return parsed `HeadingCache` objects (title, level, position);
+  - every other file delegates to the original methods;
+  - `cachedHeadingDom` items receive `data-org-line`, and a capture-phase click
+    handler routes clicks to the Org view's `setEphemeralState({line})`.
+- The bridge is patch-on-view, not a metadata-cache rewrite, so Markdown
+  outlines and other plugins are unaffected. Originals are restored on unload.
+- If the internal methods change, the bridge is a no-op with a console warning;
+  it must never break the Markdown outline.
+- `OrgView.setEphemeralState` switches to live preview, moves the cursor and
+  scrolls the editor to the heading line.
+
 ## Settings
 
 - `language` — Auto / English / 中文.
@@ -288,11 +321,16 @@ Checks performed:
   306/359 px reading).
 - Sanitized writeup (`test/writeup-redacted.org`) rendered and inspected; it
   surfaced the alignment-row, table-padding, flair-overlap and code-wrap bugs.
+- Code folding: a source block hides 5 lines (64→59), a quote hides 2
+  (64→62), the fold chevron toggles, and the document text is unchanged.
+- Core Outline: 6 Org headings appear with hierarchy, TODO keyword and Chinese
+  titles; clicking `WAITING` moves to line 65 and scrolls; editing a heading
+  updates the outline; Markdown outline still shows its 3 headings.
 - No console errors on load or during interactions.
 
 ## Future work
 
-- Fold indicators and Org headline folding.
+- Org headline folding (code and other Org blocks are foldable now).
 - Viewport-scoped inline decorations (ViewPlugin) alongside the StateField
   block layer for very large files.
 - Editing table cells in place.

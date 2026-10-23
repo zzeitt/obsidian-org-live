@@ -78,6 +78,7 @@ await send("Page.enable");
 await send("Log.enable");
 
 const mobile = arg("mobile");
+const viewport = arg("viewport");
 if (mobile) {
   await send("Emulation.setDeviceMetricsOverride", {
     width: 390,
@@ -87,6 +88,16 @@ if (mobile) {
   });
   await send("Runtime.evaluate", {
     expression: "document.body.classList.add('is-mobile')",
+  });
+} else if (viewport) {
+  const [width, height] = String(viewport)
+    .split("x")
+    .map((value) => Number(value));
+  await send("Emulation.setDeviceMetricsOverride", {
+    width: width || 1280,
+    height: height || 900,
+    deviceScaleFactor: 1,
+    mobile: false,
   });
 }
 
@@ -198,6 +209,8 @@ if (mobile) {
   await send("Runtime.evaluate", {
     expression: "document.body.classList.remove('is-mobile')",
   });
+  await send("Emulation.clearDeviceMetricsOverride");
+} else if (viewport) {
   await send("Emulation.clearDeviceMetricsOverride");
 }
 

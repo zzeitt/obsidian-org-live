@@ -15,6 +15,8 @@ Org Live opens, edits and reads `.org` files natively in Obsidian, with the same
 - **Inline syntax** — bold, italic, underline, verbatim, code, strike, links, bare URLs, timestamps, footnote references and cookies.
 - **Math** — Org `$...$` / `$$...$$`, LaTeX `\(...\)` / `\[...\]`, and bare display environments (`\begin{align}`, `equation`, `gather`, `multline`, `alignat`, `eqnarray`), including multi-line blocks. Edit the raw lines by placing the cursor inside; move away to render again.
 - **Interactions** — clickable checkboxes that save, internal links, tag search, table-cell click-to-edit, TODO cycling, list continuation and indentation.
+- **Code block folding** — fold `#+BEGIN_SRC` / `#+END_SRC` and quote/example/center/verse/comment/export blocks from an inline chevron. `Ctrl/Cmd-Shift-[` and `]` also fold/unfold. Editing and undo never alter the document.
+- **Core Outline** — Org headlines appear in Obsidian's Outline pane with their hierarchy, TODO keyword and Chinese titles. Click an item to jump to the headline. Markdown outlines continue to use Obsidian's native implementation.
 - **Bilingual settings** — Automatic / English / 中文. Command names and view-action labels update immediately.
 - **Mobile ready** — `isDesktopOnly: false`, native selection on iOS, safe-area/toolbar padding, touch-sized checkboxes, horizontally scrollable tables and Markdown-style code wrapping.
 - **Chinese friendly** — Unicode tags (`:中文:测试:`), custom Chinese TODO keywords (`#+TODO: 待办 | 完成`), CJK emphasis boundaries.
@@ -105,6 +107,20 @@ The whole settings page, the reading-view action label and the three commands ar
 
 You can bind `Toggle reading view` to the same shortcut you use for Markdown reading view (often `Ctrl/Cmd+E`).
 
+## Folding and Outline
+
+![Folded source block](shots/fold-src.png)
+
+![Org headlines in Obsidian's core Outline](shots/outline-org.png)
+
+The Outline bridge is a compatibility layer: the core outline view currently
+filters out non-Markdown files, and there is no public API for injecting
+headings. Org Live wraps `getHeadings`/`update` on the outline view instance,
+only answers for `.org` files, delegates everything else to the original
+methods, and restores them on unload. If a future Obsidian release changes
+those internals, the bridge becomes a no-op rather than breaking Markdown
+outlines.
+
 ## Sanitized writeup
 
 `test/writeup-redacted.org` is a realistic engineering-review writeup with **all hosts, tokens, people and customer names replaced by placeholders** (`example.com`, `<REDACTED_TOKEN>`, `<Team>`, `<Redacted>`). It covers headings, TODO states, priorities, tags, property drawers, metadata, tables with column alignment, long URLs, long code lines, quotes, math, Chinese text, nested task lists and footnotes.
@@ -121,7 +137,10 @@ Rendering this writeup surfaced and fixed:
 ## Known limitations
 
 - Obsidian's metadata cache is not writable for non-Markdown files, so the **outline, backlinks, graph and tag pane do not index Org headings/links/tags**. Clicking a tag performs a text search for `:tag:`.
-- Headline folding indicators are not implemented yet.
+- Code-block folding is implemented; headline folding is not implemented yet.
+- The core Outline bridge relies on guarded internal outline methods; if a
+  future Obsidian version changes them, Org headings may not appear in the
+  Outline pane until the bridge is updated.
 - Tables are rendered read-only in live preview; click a cell to edit the raw table.
 - Footnote definitions are shown inline rather than collected into a footnote section.
 - Not a complete Org implementation: no Babel, `#+INCLUDE`, macros, agenda, or export backends.

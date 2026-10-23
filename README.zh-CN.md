@@ -15,6 +15,8 @@ Org Live 让 Obsidian 原生打开、编辑和阅读 `.org` 文件，并尽量�
 - **内联语法**：粗体、斜体、下划线、verbatim、行内代码、删除线、链接、裸 URL、时间戳、脚注引用、cookie。
 - **数学**：Org `$...$` / `$$...$$`、LaTeX `\(...\)` / `\[...\]`，以及裸的显示环境（`\begin{align}`、`equation`、`gather`、`multline`、`alignat`、`eqnarray`），支持多行块。光标进入时显示原文，移出后重新渲染。
 - **交互**：复选框点击并保存、内部链接、标签搜索、表格单元格点击回到原文、TODO 循环、列表续行与缩进。
+- **代码块折叠**：通过行内箭头折叠 `#+BEGIN_SRC` / `#+END_SRC`，以及 quote/example/center/verse/comment/export 块；也支持 `Ctrl/Cmd-Shift-[` 和 `]`。编辑和撤销不会改变文档内容。
+- **核心 Outline**：Org 标题会出现在 Obsidian 的 Outline 面板中，保留层级、TODO 关键字和中文标题；点击即可跳转到对应标题。Markdown 的 Outline 继续使用 Obsidian 原生实现。
 - **双语设置**：自动 / English / 中文。命令名称和视图操作标签会即时更新。
 - **移动端**：`isDesktopOnly: false`；iOS 使用原生选择；安全区/工具栏留白；触摸尺寸复选框；表格横向滚动；代码按 Markdown 实时预览的方式折行。
 - **中文友好**：Unicode 标签（`:中文:测试:`）、自定义中文 TODO 关键字（`#+TODO: 待办 | 完成`）、CJK 强调边界。
@@ -105,6 +107,14 @@ Org 特有概念（TODO、优先级、计划行、抽屉/元数据卡片、时�
 
 可以把 `Toggle reading view` 绑定到与 Markdown 阅读视图相同的快捷键（常见为 `Ctrl/Cmd+E`）。
 
+## 折叠与 Outline
+
+![折叠代码块](shots/fold-src.png)
+
+![Org 标题出现在核心 Outline](shots/outline-org.png)
+
+Outline 桥接是兼容层：核心 outline 当前会过滤非 Markdown 文件，也没有公开的标题注入 API。Org Live 在 outline 视图实例上包装 `getHeadings`/`update`，只对 `.org` 文件返回 Org 标题，其余文件委托给原方法，并在卸载时恢复。未来 Obsidian 若改变这些内部结构，桥接会静默失效，不会破坏 Markdown Outline。
+
 ## 脱敏 writeup
 
 `test/writeup-redacted.org` 是一份贴近真实工程复盘的 writeup，**所有主机、token、人名、客户名都替换为占位符**（`example.com`、`<REDACTED_TOKEN>`、`<Team>`、`<Redacted>`）。覆盖标题、TODO、优先级、标签、属性抽屉、元数据、列对齐表格、长 URL、长代码行、引用、数学、中文、嵌套任务列表、脚注。
@@ -121,7 +131,8 @@ Org 特有概念（TODO、优先级、计划行、抽屉/元数据卡片、时�
 ## 已知限制
 
 - Obsidian 的 metadata cache 不公开写入非 Markdown 文件，因此 **大纲、反链、关系图、标签面板不会索引 Org 的标题/链接/标签**。点击标签使用 `:tag:` 原文搜索。
-- 尚未实现标题折叠指示器。
+- 代码块折叠已实现；标题折叠尚未实现。
+- 核心 Outline 桥接依赖受保护的内部分支方法；未来 Obsidian 版本若改变这些方法，Org 标题可能暂时不出现在 Outline 面板中，需要更新桥接。
 - 实时预览中的表格是只读渲染；点击单元格回到原文编辑。
 - 脚注定义目前按行内文本显示，不汇总为脚注区。
 - 不是完整 Org：不处理 Babel、`#+INCLUDE`、宏、agenda、导出后端。

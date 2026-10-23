@@ -32,10 +32,12 @@ export interface LivePreviewOptions {
 export const refreshOrgPreview = StateEffect.define<null>();
 
 let mathJaxPromise: Promise<void> | null = null;
+let mathJaxReady = false;
 function ensureMathJax(view: EditorView): void {
   if (mathJaxPromise) return;
   mathJaxPromise = loadMathJax()
     .then(() => {
+      mathJaxReady = true;
       view.dispatch({ effects: refreshOrgPreview.of(null) });
     })
     .catch((error) => console.warn("Org Live: unable to load MathJax", error));
@@ -261,7 +263,9 @@ class MathWidget extends WidgetType {
       void finishRenderMath();
     } catch (error) {
       span.textContent = this.display ? `$$${this.latex}$$` : `$${this.latex}$`;
-      console.warn("Org Live: math render failed", error);
+      // Before MathJax is ready this is an expected first-render failure.
+      // Only warn for real failures (e.g. malformed LaTeX) after loading.
+      if (mathJaxReady) console.warn("Org Live: math render failed", error);
       ensureMathJax(view);
     }
     return span;

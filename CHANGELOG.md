@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.2.0 — 2026-10-24
+
+### Features
+
+- **Code block folding**: `#+BEGIN_SRC` / `#+END_SRC` and quote, example,
+  center, verse, comment and export blocks can be folded from an inline
+  chevron. `foldService`, `foldKeymap` and CM6 fold state are used; editing and
+  undo do not modify the document.
+- **Core Outline integration**: Org headlines appear in Obsidian's core
+  Outline view with their hierarchy, TODO keyword and Chinese titles. Clicking
+  an item jumps to the headline and focuses the Org Live editor. Markdown
+  outlines are delegated to the original implementation and remain unchanged.
+  The bridge is guarded and falls back silently if Obsidian's internal outline
+  shape changes.
+- Added `shots/fold-src.png`, `shots/outline-org.png`, and verification steps.
+
+### Notes
+
+- Outline integration necessarily wraps the core outline view's private
+  `getHeadings`/`update` methods because Obsidian does not expose a public API
+  for headings in non-Markdown files. The bridge only affects `.org` files and
+  restores the original methods on unload.
+
 ## 0.1.1 — 2026-10-23
 
 ### Fixed

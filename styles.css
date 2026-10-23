@@ -274,6 +274,35 @@
   vertical-align: middle;
 }
 
+/* --- Fold indicators ---------------------------------------------------- */
+
+.org-fold-indicator {
+  display: inline-block;
+  width: 1.15em;
+  margin-right: 0.15em;
+  text-align: center;
+  font-size: 0.9em;
+  line-height: 1.4;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  opacity: 0.75;
+  vertical-align: 0.05em;
+  border-radius: var(--radius-s, 4px);
+  transition: opacity 0.12s ease, color 0.12s ease, background 0.12s ease;
+}
+
+.org-fold-indicator:hover {
+  opacity: 1;
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+
+.org-fold-indicator.is-folded {
+  opacity: 1;
+  color: var(--text-accent);
+}
+
 /* --- Org blocks: hide the #+BEGIN_/#+END_ marker lines when inactive --- */
 
 .org-view .org-block-marker {
@@ -522,6 +551,12 @@ body.is-mobile .org-checkbox {
 
 body.is-mobile .org-tag {
   min-height: 24px;
+}
+
+body.is-mobile .org-fold-indicator {
+  min-width: 24px;
+  min-height: 24px;
+  line-height: 24px;
 }
 
 body.is-mobile .org-table-widget,
