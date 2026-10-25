@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.3 — 2026-10-25
+
+### Community scan fixes (second pass)
+
+- Raised `minAppVersion` to `1.13.0` to match the declarative settings APIs
+  (`getSettingDefinitions`, `getControlValue`, `setControlValue`, `update`).
+- Removed the deprecated imperative `display()` settings fallback; 1.13+ now
+  renders the settings entirely from definitions, including settings search.
+  This also removes the plugin-name settings heading.
+- Removed the last `document.create*` path: detached widget nodes are created
+  through a hidden `document.body.createDiv()` Obsidian host.
+- Removed all CSS `!important` rules; marker lines use a higher-specificity
+  `cm-line` selector instead.
+
+Remaining recommendation: GitHub artifact attestations for release assets.
+
 ## 0.2.2 — 2026-10-25
 
 ### Community scan fixes

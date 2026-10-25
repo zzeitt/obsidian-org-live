@@ -20,6 +20,10 @@
   background: var(--background-primary);
 }
 
+.org-live-detached-host {
+  display: none;
+}
+
 .org-view .org-editor-host {
   height: 100%;
   min-height: 0;
@@ -316,11 +320,11 @@
   font-size: 0.78em;
 }
 
-.org-view .org-block-marker-hidden {
-  height: 0 !important;
-  line-height: 0 !important;
-  font-size: 0 !important;
-  padding: 0 !important;
+.org-view .cm-line.org-block-marker-hidden {
+  height: 0;
+  line-height: 0;
+  font-size: 0;
+  padding: 0;
   overflow: hidden;
 }
 
@@ -348,11 +352,11 @@
   color: var(--text-muted);
 }
 
-.org-view .org-drawer-marker-hidden {
-  height: 0 !important;
-  line-height: 0 !important;
-  font-size: 0 !important;
-  padding: 0 !important;
+.org-view .cm-line.org-drawer-marker-hidden {
+  height: 0;
+  line-height: 0;
+  font-size: 0;
+  padding: 0;
   overflow: hidden;
 }
 

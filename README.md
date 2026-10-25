@@ -51,11 +51,11 @@ Org-only concepts (TODO, priority, planning, drawers/metadata cards, timestamps,
 3. Enable **Org Live** in Settings → Community plugins.
 4. Disable any other plugin that owns `.org` files (for example **Orgmode cm6**). Only one plugin can own an extension; Org Live registers `.org` itself, so UNITADE is not needed.
 
-Requires Obsidian **1.8.7+** (uses the public `getLanguage()` API). iOS/Android are supported.
+Requires Obsidian **1.13.0+** (declarative settings APIs). iOS/Android are supported.
 
 ### Community marketplace
 
-The 0.2.2 release and repository meet the directory prerequisites. Obsidian's
+The 0.2.3 release and repository meet the directory prerequisites. Obsidian's
 current submission process uses the <https://community.obsidian.md> portal,
 which requires an Obsidian account login and GitHub connection; portal
 submission is pending. Until the plugin is admitted, use BRAT or a manual

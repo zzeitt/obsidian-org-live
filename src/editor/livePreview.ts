@@ -90,7 +90,7 @@ class BulletWidget extends WidgetType {
     inner.className = this.ordered ? "list-number" : "list-bullet";
     inner.textContent = this.label;
     outer.appendChild(inner);
-    outer.appendChild(document.createTextNode(" "));
+    outer.append(" ");
     return outer;
   }
 

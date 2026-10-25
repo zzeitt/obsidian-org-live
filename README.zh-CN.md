@@ -51,11 +51,11 @@ Org 特有概念（TODO、优先级、计划行、抽屉/元数据卡片、时�
 3. 在设置 → 第三方插件中启用 **Org Live**。
 4. 禁用其他接管 `.org` 的插件（例如 **Orgmode cm6**）。一个扩展只能由一个插件拥有；Org Live 已经自己注册 `.org`，不需要 UNITADE。
 
-需要 Obsidian **1.8.7+**（使用公开的 `getLanguage()` API）。支持 iOS/Android。
+需要 Obsidian **1.13.0+**（声明式设置 API）。支持 iOS/Android。
 
 ### 社区插件市场
 
-0.2.2 的仓库和 release 已满足目录要求。Obsidian 当前使用 <https://community.obsidian.md> 门户提交，需要登录 Obsidian 账号并授权 GitHub；门户提交尚未完成。审核通过前请使用 BRAT 或手动安装。完整清单和步骤见 [`docs/community-submission.md`](docs/community-submission.md)。
+0.2.3 的仓库和 release 已满足目录要求。Obsidian 当前使用 <https://community.obsidian.md> 门户提交，需要登录 Obsidian 账号并授权 GitHub；门户提交尚未完成。审核通过前请使用 BRAT 或手动安装。完整清单和步骤见 [`docs/community-submission.md`](docs/community-submission.md)。
 
 ### 手动安装
 

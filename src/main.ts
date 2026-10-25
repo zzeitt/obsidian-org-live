@@ -5,12 +5,10 @@ import {
   Notice,
   Plugin,
   PluginSettingTab,
-  Setting,
   SettingDefinitionItem,
 } from "obsidian";
 import { VIEW_TYPE_ORG } from "./constants";
 import {
-  LanguageSetting,
   resolveLanguage,
   translate,
   TranslationKey,
@@ -193,70 +191,5 @@ class OrgLiveSettingTab extends PluginSettingTab {
     if (key === "language") this.update();
   }
 
-  /** Fallback for Obsidian versions before the declarative settings API. */
-  display(): void {
-    const { containerEl } = this;
-    containerEl.empty();
-    new Setting(containerEl).setName("Org Live").setHeading();
-    containerEl.createEl("p", {
-      text: this.plugin.t("settings.intro"),
-      cls: "setting-item-description",
-    });
 
-    new Setting(containerEl)
-      .setName(this.plugin.t("settings.language"))
-      .setDesc(this.plugin.t("settings.languageDesc"))
-      .addDropdown((dropdown) =>
-        dropdown
-          .addOption("auto", this.plugin.t("settings.languageAuto"))
-          .addOption("en", this.plugin.t("settings.languageEn"))
-          .addOption("zh", this.plugin.t("settings.languageZh"))
-          .setValue(this.plugin.settings.language)
-          .onChange(async (value) => {
-            this.plugin.settings.language = value as LanguageSetting;
-            await this.plugin.saveSettings({ refreshEditors: false });
-            this.display();
-          })
-      );
-
-    new Setting(containerEl)
-      .setName(this.plugin.t("settings.livePreview"))
-      .setDesc(this.plugin.t("settings.livePreviewDesc"))
-      .addToggle((toggle) =>
-        toggle.setValue(this.plugin.settings.livePreview).onChange(async (value) => {
-          this.plugin.settings.livePreview = value;
-          await this.plugin.saveSettings();
-        })
-      );
-
-    new Setting(containerEl)
-      .setName(this.plugin.t("settings.renderTables"))
-      .setDesc(this.plugin.t("settings.renderTablesDesc"))
-      .addToggle((toggle) =>
-        toggle.setValue(this.plugin.settings.renderTables).onChange(async (value) => {
-          this.plugin.settings.renderTables = value;
-          await this.plugin.saveSettings();
-        })
-      );
-
-    new Setting(containerEl)
-      .setName(this.plugin.t("settings.renderMath"))
-      .setDesc(this.plugin.t("settings.renderMathDesc"))
-      .addToggle((toggle) =>
-        toggle.setValue(this.plugin.settings.renderMath).onChange(async (value) => {
-          this.plugin.settings.renderMath = value;
-          await this.plugin.saveSettings();
-        })
-      );
-
-    new Setting(containerEl)
-      .setName(this.plugin.t("settings.showProperties"))
-      .setDesc(this.plugin.t("settings.showPropertiesDesc"))
-      .addToggle((toggle) =>
-        toggle.setValue(this.plugin.settings.showProperties).onChange(async (value) => {
-          this.plugin.settings.showProperties = value;
-          await this.plugin.saveSettings();
-        })
-      );
-  }
 }
