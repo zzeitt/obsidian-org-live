@@ -15,7 +15,9 @@ export function openOrgLink(app: App, target: string, sourcePath: string): void 
     return;
   }
   // `file:notes.org::*Heading` — openLinkText understands subpaths.
-  app.workspace.openLinkText(cleaned, sourcePath, false);
+  void app.workspace
+    .openLinkText(cleaned, sourcePath, false)
+    .catch((error) => console.warn("Org Live: could not open link", error));
 }
 
 /**

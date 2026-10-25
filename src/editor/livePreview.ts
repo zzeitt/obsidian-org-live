@@ -10,10 +10,11 @@ import { Decoration, DecorationSet, EditorView, WidgetType } from "@codemirror/v
 import { App, finishRenderMath, loadMathJax, renderMath } from "obsidian";
 import { foldEffect, unfoldEffect } from "@codemirror/language";
 import { OrgFoldInfo, orgFoldForLine } from "./fold";
-import { BlockType, OrgDoc, OrgLine, TableData, parseOrgDoc } from "../org/parse";
+import { OrgDoc, TableData, parseOrgDoc } from "../org/parse";
 import { InlineToken, parseInline } from "../org/inline";
 import { highlightCode } from "../org/highlight";
 import { hydrateMath, renderInlineHtml } from "../org/inlineRender";
+import { appendSanitizedHtml, createDetachedEl } from "../util/dom";
 import {
   openOrgLink,
   openTagSearch,
@@ -81,11 +82,11 @@ class BulletWidget extends WidgetType {
   }
 
   toDOM(): HTMLElement {
-    const outer = document.createElement("span");
+    const outer = createDetachedEl("span");
     outer.className = `cm-formatting cm-formatting-list cm-formatting-list-${
       this.ordered ? "ol" : "ul"
     } cm-list-${this.level}`;
-    const inner = document.createElement("span");
+    const inner = createDetachedEl("span");
     inner.className = this.ordered ? "list-number" : "list-bullet";
     inner.textContent = this.label;
     outer.appendChild(inner);
@@ -108,9 +109,9 @@ class CheckboxWidget extends WidgetType {
   }
 
   toDOM(view: EditorView): HTMLElement {
-    const label = document.createElement("label");
+    const label = createDetachedEl("label");
     label.className = "task-list-label";
-    const input = document.createElement("input");
+    const input = createDetachedEl("input");
     input.type = "checkbox";
     input.className = "task-list-item-checkbox org-checkbox";
     input.checked = this.checked;
@@ -142,17 +143,17 @@ class TagWidget extends WidgetType {
   }
 
   toDOM(): HTMLElement {
-    const wrapper = document.createElement("span");
+    const wrapper = createDetachedEl("span");
     wrapper.className = "org-tag";
     wrapper.title = this.names.map((name) => `:${name}:`).join(" ");
     for (const name of this.names) {
-      const chip = document.createElement("span");
+      const chip = createDetachedEl("span");
       chip.className = "org-tag-chip";
-      const begin = document.createElement("span");
+      const begin = createDetachedEl("span");
       begin.className = "cm-hashtag cm-hashtag-begin cm-meta cm-tag-tag";
       begin.textContent = "#";
       begin.setAttribute("spellcheck", "false");
-      const end = document.createElement("span");
+      const end = createDetachedEl("span");
       end.className = "cm-hashtag cm-hashtag-end cm-meta cm-tag-tag";
       end.textContent = name;
       end.setAttribute("spellcheck", "false");
@@ -193,12 +194,12 @@ class LinkWidget extends WidgetType {
   }
 
   toDOM(): HTMLElement {
-    const outer = document.createElement("span");
+    const outer = createDetachedEl("span");
     outer.className = this.external ? "cm-link org-link" : "cm-hmd-internal-link org-link";
     outer.title = this.target;
     outer.setAttribute("role", "link");
     outer.setAttribute("tabindex", "-1");
-    const inner = document.createElement("span");
+    const inner = createDetachedEl("span");
     inner.className = "cm-underline";
     inner.textContent = this.label;
     outer.appendChild(inner);
@@ -230,7 +231,7 @@ class ImageWidget extends WidgetType {
   }
 
   toDOM(view: EditorView): HTMLElement {
-    const img = document.createElement("img");
+    const img = createDetachedEl("img");
     img.className = "org-inline-image";
     img.src = this.src;
     img.alt = this.alt;
@@ -257,7 +258,7 @@ class MathWidget extends WidgetType {
   }
 
   toDOM(view: EditorView): HTMLElement {
-    const span = document.createElement("span");
+    const span = createDetachedEl("span");
     span.className = this.display ? "math org-math org-math-display" : "math org-math";
     span.setAttribute("contenteditable", "false");
     try {
@@ -284,7 +285,7 @@ class RuleWidget extends WidgetType {
   }
 
   toDOM(): HTMLElement {
-    return document.createElement("hr");
+    return createDetachedEl("hr");
   }
 
   ignoreEvent(): boolean {
@@ -311,11 +312,11 @@ class CodeFlairWidget extends WidgetType {
   }
 
   toDOM(view: EditorView): HTMLElement {
-    const wrapper = document.createElement("span");
+    const wrapper = createDetachedEl("span");
     wrapper.className = "org-src-header";
 
     if (this.fold) {
-      const toggle = document.createElement("span");
+      const toggle = createDetachedEl("span");
       toggle.className = `org-fold-indicator org-fold-indicator-src${
         this.fold.folded ? " is-folded" : ""
       }`;
@@ -335,7 +336,7 @@ class CodeFlairWidget extends WidgetType {
       wrapper.appendChild(toggle);
     }
 
-    const flair = document.createElement("span");
+    const flair = createDetachedEl("span");
     flair.className = "code-block-flair";
     flair.textContent = this.lang || "SRC";
     flair.title = "Show the Org block markers";
@@ -374,10 +375,10 @@ class TableWidget extends WidgetType {
   }
 
   toDOM(view: EditorView): HTMLElement {
-    const wrapper = document.createElement("div");
+    const wrapper = createDetachedEl("div");
     wrapper.className = "org-table-widget cm-embed-block cm-table-widget markdown-rendered";
     wrapper.setAttribute("contenteditable", "false");
-    const tableEl = document.createElement("table");
+    const tableEl = createDetachedEl("table");
     const headerRule = this.table.ruleAfter.length > 0 ? this.table.ruleAfter[0] + 1 : 0;
     let currentSection: HTMLTableSectionElement | null = null;
 
@@ -385,18 +386,21 @@ class TableWidget extends WidgetType {
       const inHead = rowIndex < headerRule;
       const wanted = inHead ? "thead" : "tbody";
       if (!currentSection || currentSection.tagName.toLowerCase() !== wanted) {
-        currentSection = document.createElement(wanted);
+        currentSection = createDetachedEl(wanted);
         tableEl.appendChild(currentSection);
       }
-      const tr = document.createElement("tr");
+      const tr = createDetachedEl("tr");
       row.cells.forEach((cell) => {
-        const td = document.createElement(inHead ? "th" : "td");
+        const td = createDetachedEl(inHead ? "th" : "td");
         if (cell.align) td.style.textAlign = cell.align;
-        td.innerHTML = renderInlineHtml(cell.text, cell.from, {
-          app: this.app,
-          sourcePath: this.sourcePath,
-          math: this.renderMath,
-        });
+        appendSanitizedHtml(
+          td,
+          renderInlineHtml(cell.text, cell.from, {
+            app: this.app,
+            sourcePath: this.sourcePath,
+            math: this.renderMath,
+          })
+        );
         td.addEventListener("click", (event) => {
           event.preventDefault();
           event.stopPropagation();
@@ -434,21 +438,21 @@ class PropertiesWidget extends WidgetType {
   }
 
   toDOM(view: EditorView): HTMLElement {
-    const wrapper = document.createElement("div");
+    const wrapper = createDetachedEl("div");
     wrapper.className = "org-properties";
-    const title = document.createElement("div");
+    const title = createDetachedEl("div");
     title.className = "org-properties-title";
     title.textContent = this.name.toLowerCase();
     wrapper.appendChild(title);
 
     if (this.entries.length > 0) {
       for (const entry of this.entries) {
-        const row = document.createElement("div");
+        const row = createDetachedEl("div");
         row.className = "org-property";
-        const key = document.createElement("span");
+        const key = createDetachedEl("span");
         key.className = "org-property-key";
         key.textContent = entry.key;
-        const value = document.createElement("span");
+        const value = createDetachedEl("span");
         value.className = "org-property-value";
         value.textContent = entry.value;
         row.appendChild(key);
@@ -456,7 +460,7 @@ class PropertiesWidget extends WidgetType {
         wrapper.appendChild(row);
       }
     } else {
-      const pre = document.createElement("pre");
+      const pre = createDetachedEl("pre");
       pre.className = "org-logbook";
       pre.textContent = this.raw;
       wrapper.appendChild(pre);
@@ -490,26 +494,26 @@ class MetadataWidget extends WidgetType {
   }
 
   toDOM(view: EditorView): HTMLElement {
-    const outer = document.createElement("div");
+    const outer = createDetachedEl("div");
     outer.className = "org-metadata";
 
     if (this.title) {
-      const title = document.createElement("div");
+      const title = createDetachedEl("div");
       title.className = "inline-title";
       title.textContent = this.title;
       outer.appendChild(title);
     }
 
     if (this.entries.length > 0) {
-      const card = document.createElement("div");
+      const card = createDetachedEl("div");
       card.className = "org-properties";
       for (const entry of this.entries) {
-        const row = document.createElement("div");
+        const row = createDetachedEl("div");
         row.className = "org-property";
-        const key = document.createElement("span");
+        const key = createDetachedEl("span");
         key.className = "org-property-key";
         key.textContent = entry.key;
-        const value = document.createElement("span");
+        const value = createDetachedEl("span");
         value.className = "org-property-value";
         value.textContent = entry.value;
         row.appendChild(key);
@@ -542,7 +546,7 @@ class InlineTitleWidget extends WidgetType {
   }
 
   toDOM(view: EditorView): HTMLElement {
-    const el = document.createElement("div");
+    const el = createDetachedEl("div");
     el.className = "inline-title org-inline-title";
     el.textContent = this.title;
     el.setAttribute("contenteditable", "false");

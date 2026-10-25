@@ -153,20 +153,19 @@ export class OrgOutlineBridge {
     if (typeof originalGetHeadings !== "function") return;
 
     const originalUpdate = view.update;
-    const bridge = this;
 
-    view.getHeadings = function getHeadings(this: OutlineViewLike) {
-      const file = this.file;
+    view.getHeadings = () => {
+      const file = view.file;
       if (file?.extension === "org") {
-        return bridge.headings.get(file.path) ?? [];
+        return this.headings.get(file.path) ?? [];
       }
-      return originalGetHeadings.call(this);
+      return originalGetHeadings.call(view);
     };
 
     if (typeof originalUpdate === "function") {
-      view.update = function update(this: OutlineViewLike) {
-        const result = originalUpdate.call(this);
-        bridge.decorate(this);
+      view.update = () => {
+        const result = originalUpdate.call(view);
+        this.decorate(view);
         return result;
       };
     }

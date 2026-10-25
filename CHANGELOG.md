@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.2.2 — 2026-10-25
+
+### Community scan fixes
+
+- Manifest description no longer contains the word “Obsidian”.
+- Removed direct `innerHTML` assignments from the live table, reading view and
+  Prism code hydration. HTML fragments now go through Obsidian's
+  `sanitizeHTMLToDom` and DOM append/replace APIs.
+- Settings heading uses `Setting.setHeading()`; the tab now also implements
+  `getSettingDefinitions()` for settings search on Obsidian 1.13+.
+- Replaced `document.createElement` with an Obsidian-aware detached
+  `DocumentFragment.createEl` helper.
+- Fixed Outline `this` aliasing, unhandled `openLinkText` promise,
+  `requestAnimationFrame` in popouts, Prism `any` typing, unnecessary regex
+  escapes, and unused imports.
+- The 0.2.2 release intentionally omits `versions.json` from release assets
+  (it remains at the repo root); Obsidian only downloads `main.js`,
+  `manifest.json` and `styles.css`.
+
+Remaining scan recommendations: build provenance attestations and a small
+number of CSS `!important` rules used to collapse Org marker lines.
+
 ## 0.2.1 — 2026-10-24
 
 ### Fixed

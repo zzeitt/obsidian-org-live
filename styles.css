@@ -43,9 +43,8 @@
 /* Obsidian sizes this element for its own .cm-sizer/.cm-contentContainer
    structure. We embed a plain CM6 editor, so give it a normal width and the
    same readable line width. */
-.org-view .cm-content {
-  width: 100% !important;
-  flex-basis: auto !important;
+.org-view.markdown-source-view.mod-cm6 .cm-content {
+  width: 100%;
   max-width: var(--file-line-width, 700px);
   margin: 0 auto;
   padding: 0 0 20vh;
@@ -55,9 +54,9 @@
   border-left-color: var(--caret-color, var(--text-normal));
 }
 
-.org-view .cm-selectionBackground,
-.org-view .cm-content ::selection {
-  background: var(--text-selection, rgba(80, 140, 255, 0.3)) !important;
+.org-view.markdown-source-view.mod-cm6 .cm-selectionBackground,
+.org-view.markdown-source-view.mod-cm6 .cm-content ::selection {
+  background: var(--text-selection, rgba(80, 140, 255, 0.3));
 }
 
 /* Inline title block widget (matches Markdown's inline title). */

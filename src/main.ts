@@ -6,6 +6,7 @@ import {
   Plugin,
   PluginSettingTab,
   Setting,
+  SettingDefinitionItem,
 } from "obsidian";
 import { VIEW_TYPE_ORG } from "./constants";
 import {
@@ -15,6 +16,7 @@ import {
   TranslationKey,
   UiLanguage,
 } from "./i18n";
+import type { PrismLike } from "./org/highlight";
 import { setPrismInstance } from "./org/highlight";
 import { OrgOutlineBridge } from "./integration/outline";
 import { DEFAULT_SETTINGS, OrgLiveSettings } from "./settings";
@@ -86,7 +88,7 @@ export default class OrgLivePlugin extends Plugin {
     // they are ready so math and code rendered before load get upgraded.
     void Promise.allSettled([
       loadMathJax(),
-      loadPrism().then((instance) => setPrismInstance(instance)),
+      loadPrism().then((instance) => setPrismInstance(instance as PrismLike)),
     ])
       .then(() => {
         for (const leaf of this.app.workspace.getLeavesOfType(VIEW_TYPE_ORG)) {
@@ -101,7 +103,8 @@ export default class OrgLivePlugin extends Plugin {
   }
 
   async loadSettings(): Promise<void> {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    const stored = (await this.loadData()) as Partial<OrgLiveSettings> | null;
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, stored ?? {});
   }
 
   async saveSettings(options: { refreshEditors?: boolean } = {}): Promise<void> {
@@ -142,10 +145,59 @@ class OrgLiveSettingTab extends PluginSettingTab {
     super(app, plugin);
   }
 
+  getSettingDefinitions(): SettingDefinitionItem[] {
+    return [
+      {
+        name: this.plugin.t("settings.language"),
+        desc: this.plugin.t("settings.languageDesc"),
+        control: {
+          type: "dropdown",
+          key: "language",
+          options: {
+            auto: this.plugin.t("settings.languageAuto"),
+            en: this.plugin.t("settings.languageEn"),
+            zh: this.plugin.t("settings.languageZh"),
+          },
+        },
+      },
+      {
+        name: this.plugin.t("settings.livePreview"),
+        desc: this.plugin.t("settings.livePreviewDesc"),
+        control: { type: "toggle", key: "livePreview" },
+      },
+      {
+        name: this.plugin.t("settings.renderTables"),
+        desc: this.plugin.t("settings.renderTablesDesc"),
+        control: { type: "toggle", key: "renderTables" },
+      },
+      {
+        name: this.plugin.t("settings.renderMath"),
+        desc: this.plugin.t("settings.renderMathDesc"),
+        control: { type: "toggle", key: "renderMath" },
+      },
+      {
+        name: this.plugin.t("settings.showProperties"),
+        desc: this.plugin.t("settings.showPropertiesDesc"),
+        control: { type: "toggle", key: "showProperties" },
+      },
+    ];
+  }
+
+  getControlValue(key: string): unknown {
+    return (this.plugin.settings as unknown as Record<string, unknown>)[key];
+  }
+
+  async setControlValue(key: string, value: unknown): Promise<void> {
+    (this.plugin.settings as unknown as Record<string, unknown>)[key] = value;
+    await this.plugin.saveSettings({ refreshEditors: key !== "language" });
+    if (key === "language") this.update();
+  }
+
+  /** Fallback for Obsidian versions before the declarative settings API. */
   display(): void {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "Org Live" });
+    new Setting(containerEl).setName("Org Live").setHeading();
     containerEl.createEl("p", {
       text: this.plugin.t("settings.intro"),
       cls: "setting-item-description",

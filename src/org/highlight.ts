@@ -14,7 +14,7 @@ export interface CodeRange {
   cls: string;
 }
 
-type PrismLike = {
+export type PrismLike = {
   languages: Record<string, unknown>;
   highlight: (code: string, grammar: unknown, language: string) => string;
 };

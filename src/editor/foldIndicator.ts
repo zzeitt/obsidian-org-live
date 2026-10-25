@@ -8,6 +8,7 @@ import {
 } from "@codemirror/view";
 import { foldEffect, unfoldEffect } from "@codemirror/language";
 import { OrgFoldInfo, orgFoldableBlocks } from "./fold";
+import { createDetachedEl } from "../util/dom";
 
 class OrgFoldWidget extends WidgetType {
   constructor(readonly info: OrgFoldInfo) {
@@ -23,7 +24,7 @@ class OrgFoldWidget extends WidgetType {
   }
 
   toDOM(view: EditorView): HTMLElement {
-    const span = document.createElement("span");
+    const span = createDetachedEl("span");
     span.className = `org-fold-indicator org-fold-indicator-${this.info.type}${
       this.info.folded ? " is-folded" : ""
     }`;

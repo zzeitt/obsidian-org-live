@@ -1,6 +1,6 @@
 import { App, finishRenderMath, loadMathJax, renderMath } from "obsidian";
 import { parseInline } from "./inline";
-import { resolveResourcePath, wireLinks } from "../util/links";
+import { resolveResourcePath } from "../util/links";
 
 export interface InlineRenderOptions {
   tags?: boolean;
@@ -138,8 +138,3 @@ export function hydrateMath(root: HTMLElement): void {
   }
 }
 
-export function finishHtml(html: string, root: HTMLElement, app: App, sourcePath: string): void {
-  root.innerHTML = html;
-  wireLinks(root, app, sourcePath);
-  hydrateMath(root);
-}

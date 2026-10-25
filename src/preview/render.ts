@@ -1,7 +1,13 @@
 import { App, loadPrism } from "obsidian";
+import type { PrismLike } from "../org/highlight";
 import { OrgDoc, OrgLine, TableData, parseOrgDoc } from "../org/parse";
 import { escapeHtml, hydrateMath, renderInlineHtml } from "../org/inlineRender";
 import { wireLinks } from "../util/links";
+import {
+  appendSanitizedHtml,
+  createDetachedEl,
+  replaceWithSanitizedHtml,
+} from "../util/dom";
 import { OrgLiveSettings } from "../settings";
 
 export interface PreviewRenderOptions {
@@ -54,7 +60,7 @@ function headingHtml(line: OrgLine, opts: InlineOpts, id: string): string {
       )}" target="_blank" rel="noopener nofollow">#${escapeHtml(tag.name)}</a>`
     );
   }
-  const plainHeading = title.replace(/[*_/+=~\[\]]/g, "").trim();
+  const plainHeading = title.replace(/[*_/+=~[\]]/g, "").trim();
   return `<h${level} id="${escapeHtml(id)}" data-heading="${escapeHtml(
     plainHeading
   )}" class="org-heading-preview org-level-${level}" data-level="${h.level}">${parts.join(
@@ -257,7 +263,7 @@ const PRISM_ALIASES: Record<string, string> = {
 /** Highlight fenced code with the same Prism instance Obsidian uses. */
 async function hydrateCodeBlocks(root: HTMLElement): Promise<void> {
   try {
-    const Prism = await loadPrism();
+    const Prism = (await loadPrism()) as PrismLike;
     root.querySelectorAll<HTMLElement>("pre > code").forEach((code) => {
       if (code.classList.contains("is-loaded")) return;
       const languageClass = Array.from(code.classList).find((name) =>
@@ -269,7 +275,7 @@ async function hydrateCodeBlocks(root: HTMLElement): Promise<void> {
         Prism.languages[language] ?? Prism.languages[PRISM_ALIASES[language] ?? ""];
       if (!grammar) return;
       const source = code.textContent ?? "";
-      code.innerHTML = Prism.highlight(source, grammar, language);
+      replaceWithSanitizedHtml(code, Prism.highlight(source, grammar, language));
       code.classList.add("is-loaded");
     });
   } catch (error) {
@@ -450,13 +456,13 @@ export function renderOrgPreview(
     }
   }
 
-  const root = document.createElement("div");
+  const root = createDetachedEl("div");
   root.className =
     "markdown-preview-view markdown-rendered node-insert-event is-readable-line-width " +
     "allow-fold-headings allow-fold-lists show-indentation-guide show-properties org-preview";
-  const sizer = document.createElement("div");
+  const sizer = createDetachedEl("div");
   sizer.className = "markdown-preview-sizer";
-  sizer.innerHTML = html;
+  appendSanitizedHtml(sizer, html);
   root.appendChild(sizer);
 
   wireLinks(root, app, sourcePath);

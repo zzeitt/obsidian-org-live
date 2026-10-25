@@ -220,7 +220,7 @@ export class OrgView extends TextFileView {
     this.previewHost.appendChild(preview);
 
     if (ratio != null) {
-      requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
         const max = Math.max(0, preview.scrollHeight - preview.clientHeight);
         preview.scrollTop = ratio * max;
       });
@@ -286,7 +286,7 @@ export class OrgView extends TextFileView {
     };
 
     apply();
-    requestAnimationFrame(apply);
+    window.requestAnimationFrame(apply);
     window.setTimeout(apply, 120);
   }
 }

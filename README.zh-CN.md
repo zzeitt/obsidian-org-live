@@ -55,7 +55,7 @@ Org 特有概念（TODO、优先级、计划行、抽屉/元数据卡片、时�
 
 ### 社区插件市场
 
-0.2.1 的仓库和 release 已满足目录要求。Obsidian 当前使用 <https://community.obsidian.md> 门户提交，需要登录 Obsidian 账号并授权 GitHub；门户提交尚未完成。审核通过前请使用 BRAT 或手动安装。完整清单和步骤见 [`docs/community-submission.md`](docs/community-submission.md)。
+0.2.2 的仓库和 release 已满足目录要求。Obsidian 当前使用 <https://community.obsidian.md> 门户提交，需要登录 Obsidian 账号并授权 GitHub；门户提交尚未完成。审核通过前请使用 BRAT 或手动安装。完整清单和步骤见 [`docs/community-submission.md`](docs/community-submission.md)。
 
 ### 手动安装
 
