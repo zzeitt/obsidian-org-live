@@ -18,11 +18,11 @@ yet. BRAT remains the install path until the portal review is complete.
   - `minAppVersion`: `1.8.7`
   - `isDesktopOnly`: false
 - Git tag `0.2.2` matches the manifest version.
-- GitHub release `0.2.2` contains binary assets:
+- GitHub release `0.2.2` contains only the assets Obsidian downloads:
   - `main.js`
   - `manifest.json`
   - `styles.css`
-  - `versions.json`
+- `versions.json` stays at the repository root (not a release asset).
 - Build script (`npm run build`) produces `main.js` from source.
 - No telemetry, analytics, remote code execution, `eval`, or `new Function`.
 - Mobile support is declared (`isDesktopOnly: false`).
