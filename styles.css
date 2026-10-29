@@ -562,6 +562,25 @@ body.is-mobile .org-tag {
   min-height: 24px;
 }
 
+/* TODO badges are small by design on desktop; on a phone they need a larger
+   target and a line height that keeps them inside multi-line headlines. */
+body.is-mobile .org-todo {
+  font-size: calc(var(--font-text-size, 16px) * 0.74);
+  line-height: 1.7;
+  min-height: 1.7em;
+  padding: 0 0.5em;
+  vertical-align: middle;
+}
+
+body.is-mobile .org-heading {
+  line-height: 1.35;
+}
+
+body.is-mobile .org-heading .org-priority {
+  font-size: calc(var(--font-text-size, 16px) * 0.68);
+  vertical-align: middle;
+}
+
 body.is-mobile .org-fold-indicator {
   min-width: 24px;
   min-height: 24px;

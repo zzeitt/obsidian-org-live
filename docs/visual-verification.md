@@ -19,6 +19,9 @@ Enabled community plugins: **org-live only** (`orgmode-cm6` disabled; no UNITADE
 - `test/math-formats.org` — bare `\begin{align}`, inline `\(...\)`, multi-line
   `\(...\)`, `\[...\]`, multi-line `$$...$$`, same-line `$...$`/`$$...$$`, and
   an `equation` environment.
+- `test/todo-keywords.org` — file-level `#+TODO:` with fast-access forms
+  (`待办(t) 进行中(p) | 完成(d!) 取消(c@)`), built-in TODO/NEXT headings, and a
+  heading for the plugin-level custom keyword setting.
 
 The files are copied to the vault by `scripts/deploy.mjs`.
 
@@ -56,6 +59,9 @@ The files are copied to the vault by `scripts/deploy.mjs`.
 | `shots/settings-en.png` | English settings page |
 | `shots/settings-zh.png` | Chinese settings page |
 | `shots/mobile-live-top.png` | 390×844 mobile live preview (sidebar hidden) |
+| `shots/mobile-todo-live.png` | Mobile live preview: default TODO/DONE/NEXT badges |
+| `shots/mobile-todo-reading.png` | Mobile reading view: default TODO badge |
+| `shots/mobile-todo-custom-reading.png` | Mobile reading view: custom Chinese TODO keywords |
 | `shots/mobile-writeup-code.png` | Mobile long-code wrapping and language flair spacing |
 | `shots/mobile-writeup-table.png` | Mobile 5-column table with horizontal scrolling |
 | `shots/mobile-writeup-reading.png` | Mobile reading view: table scroll + wrapped code |
@@ -106,6 +112,9 @@ Performed through CDP against the real app:
 | Language switch (English → 中文) | settings labels, command names and the reading-view action label all changed immediately |
 | Settings window | separate Electron window captured with `--target Settings` |
 | Mobile live preview | 390 px content width, metadata/heading/body reflow, 20 px checkbox targets |
+| Mobile TODO states (default) | `TODO`, `DONE`, `NEXT`, `WAITING`, `完成` all render in live and reading views; badge ≈11.8 px, 20 px high |
+| Mobile TODO states (custom) | `test/todo-keywords.org`: `待办`, `进行中`, `完成`, `取消` render from file-level fast-access `#+TODO:`; plugin setting `自定义 \| 归档` adds a custom active state |
+| Custom TODO settings | Settings text field `active \| done` persists, invalidates parser caches, and refreshes live preview, reading view and Outline |
 | Mobile code block | long code wraps without a global horizontal scrollbar; flair no longer overlaps |
 | Mobile tables | 5-column table: container 306 px client / 367 px scroll width in live, 306/359 in reading; horizontal scroll works |
 | Math formats | `test/math-formats.org`: 9 MathJax containers in live and reading; 5 block-math widgets; `\begin{align}`, `\(...\)`, multi-line `\(...\)`, `\[...\]`, multiline `$$`, `equation` all render |
@@ -187,6 +196,9 @@ viewport and mobile CSS, not WKWebView keyboard behaviour.
     and same-line `$$...$$` worked. Added inline `\(...\)`/`\[...\]` and
     multi-line/block math (`$$`, `\[...\]`, multi-line `\(...\)`, bare
     `\begin{align}`/`equation`/`gather`/`multline`/`alignat`/`eqnarray`).
+11. **Fast-access TODO declarations were not matched.** `#+TODO: TODO(t) | DONE(d!)`
+    stored the raw tokens `TODO(t)`/`DONE(d!)`, so headings stayed plain. Added
+    keyword normalization and a plugin-level custom keyword setting.
 
 ## Notes / limitations confirmed visually
 

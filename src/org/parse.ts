@@ -8,6 +8,8 @@
  * Offsets in this file are absolute offsets into the original document.
  */
 
+import { createTodoKeywordSets } from "./todoKeywords";
+
 export type BlockType =
   | "src"
   | "quote"
@@ -171,19 +173,6 @@ const BLOCK_TYPES: Record<string, BlockType> = {
   EXPORT: "export",
 };
 
-const DEFAULT_ACTIVE = [
-  "TODO",
-  "NEXT",
-  "STARTED",
-  "WAITING",
-  "HOLD",
-  "HOLDING",
-  "BLOCKED",
-  "IN-PROGRESS",
-  "INPROGRESS",
-];
-const DEFAULT_DONE = ["DONE", "CANCELED", "CANCELLED", "FINISHED"];
-
 const DRAWER_NAMES = new Set(["PROPERTIES", "LOGBOOK", "END", "CLOCK"]);
 
 function isUpperDrawerName(name: string): boolean {
@@ -238,19 +227,18 @@ export function parseOrgDoc(source: string): OrgDoc {
   const blocks: BlockData[] = [];
   const tables: TableData[] = [];
   const drawers: DrawerData[] = [];
-  const todoActive = new Set(DEFAULT_ACTIVE);
-  const todoDone = new Set(DEFAULT_DONE);
   let title: string | undefined;
 
-  // First pass: keyword-defined TODO lists (they may appear anywhere, but
-  // virtually always before the first headline).
+  // File-level #+TODO: declarations extend the built-in and user-configured
+  // keyword sets.
+  const fileTodoSpecs: string[] = [];
   for (const raw of rawLines) {
     const m = /^\s*#\+(?:SEQ_|TYP_)?TODO:\s*(.*)$/i.exec(raw);
-    if (!m) continue;
-    const [activePart, donePart = ""] = m[1].split("|");
-    for (const word of activePart.trim().split(/\s+/).filter(Boolean)) todoActive.add(word);
-    for (const word of donePart.trim().split(/\s+/).filter(Boolean)) todoDone.add(word);
+    if (m) fileTodoSpecs.push(m[1]);
   }
+  const keywordSets = createTodoKeywordSets(fileTodoSpecs);
+  const todoActive = new Set(keywordSets.active);
+  const todoDone = new Set(keywordSets.done);
 
   let offset = 0;
   let block: BlockData | undefined;

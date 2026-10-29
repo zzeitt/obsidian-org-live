@@ -1,0 +1,23 @@
+#+TITLE: Custom TODO keywords / 自定义 TODO
+#+TODO: 待办(t) 进行中(p) | 完成(d!) 取消(c@)
+
+* 待办 中文活动状态 :todo:
+This keyword comes from the file-level #+TODO: declaration.
+
+* 进行中 另一个活动状态
+The `进行中` keyword should be styled as an active TODO state.
+
+* 完成 中文完成状态
+The `完成` keyword should be styled as a done state.
+
+* 取消 已取消
+The `取消` keyword should be styled as a done state.
+
+* TODO 默认关键字仍然可用
+Built-in keywords remain available.
+
+* NEXT 默认活动状态
+Built-in NEXT remains available.
+
+* 自定义 通过插件设置
+This heading tests a keyword supplied only by the plugin setting.

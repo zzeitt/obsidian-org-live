@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.2.4 — 2026-10-30
+
+### Features
+
+- **Custom TODO keywords**: new Settings → Org Live field in the Org form
+  `active1 active2 | done1 done2`. These are additive to the built-in set, so
+  existing files keep working.
+- **Per-file keywords**: `#+TODO:`, `#+SEQ_TODO:` and `#+TYP_TODO:` declarations
+  are still supported, including fast-access forms such as `TODO(t)`,
+  `WAIT(w@/!)` and `DONE(d!)`.
+- **Mobile polish**: larger TODO badges (≈12 px, 20 px high), safer line height
+  inside multi-line headlines, and the same styling in live preview and reading
+  view. Mobile TODO state rendering was re-verified at 390×844.
+
+### Fixed
+
+- Custom TODO keywords declared with fast-access keys were previously stored as
+  `TODO(t)` instead of `TODO`, so headings were not recognized. Keywords are now
+  normalized before matching.
+- TODO keyword changes invalidate the parser caches and refresh the core
+  Outline immediately.
+
+### Notes
+
+- Default `TODO`/`DONE` states render on mobile in both live preview and
+  reading view; if a custom state is still plain text, add it to the setting or
+  declare it with `#+TODO:` in the file.
+
 ## 0.2.3 — 2026-10-25
 
 ### Community scan fixes (second pass)

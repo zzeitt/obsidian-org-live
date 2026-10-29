@@ -10,6 +10,7 @@ import { Decoration, DecorationSet, EditorView, WidgetType } from "@codemirror/v
 import { App, finishRenderMath, loadMathJax, renderMath } from "obsidian";
 import { foldEffect, unfoldEffect } from "@codemirror/language";
 import { OrgFoldInfo, orgFoldForLine } from "./fold";
+import { getTodoKeywordVersion } from "../org/todoKeywords";
 import { OrgDoc, TableData, parseOrgDoc } from "../org/parse";
 import { InlineToken, parseInline } from "../org/inline";
 import { highlightCode } from "../org/highlight";
@@ -566,15 +567,15 @@ class InlineTitleWidget extends WidgetType {
 // Decoration builder
 // ---------------------------------------------------------------------------
 
-const docCache = new WeakMap<Text, OrgDoc>();
+const docCache = new WeakMap<Text, { version: number; doc: OrgDoc }>();
 
 function docFor(text: Text): OrgDoc {
-  let cached = docCache.get(text);
-  if (!cached) {
-    cached = parseOrgDoc(text.toString());
-    docCache.set(text, cached);
-  }
-  return cached;
+  const version = getTodoKeywordVersion();
+  const cached = docCache.get(text);
+  if (cached && cached.version === version) return cached.doc;
+  const doc = parseOrgDoc(text.toString());
+  docCache.set(text, { version, doc });
+  return doc;
 }
 
 function decorateInlineTokens(

@@ -247,6 +247,7 @@ export class OrgView extends TextFileView {
       ],
     });
     this.updateModeAction();
+    this.updateOutline(true);
     if (this.mode === "preview") this.renderPreview();
   }
 

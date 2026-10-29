@@ -11,6 +11,10 @@ const en = {
   "settings.languageAuto": "Automatic (follow Obsidian)",
   "settings.languageEn": "English",
   "settings.languageZh": "中文",
+  "settings.todoKeywords": "Custom TODO keywords",
+  "settings.todoKeywordsDesc":
+    "Extra Org TODO keywords, separated by a vertical bar: active | done. Example: TODO NEXT | DONE CANCELED. File-level #+TODO: declarations are also supported.",
+  "settings.todoKeywordsPlaceholder": "e.g. 待办 进行中 | 完成 取消",
   "settings.livePreview": "Live preview",
   "settings.livePreviewDesc":
     "Render Org syntax while editing, the way Obsidian renders Markdown.",
@@ -41,6 +45,10 @@ const zh: Record<TranslationKey, string> = {
   "settings.languageAuto": "自动（跟随 Obsidian）",
   "settings.languageEn": "English",
   "settings.languageZh": "中文",
+  "settings.todoKeywords": "自定义 TODO 关键字",
+  "settings.todoKeywordsDesc":
+    "额外的 Org TODO 关键字，用竖线分隔：进行中 | 已完成。例如：待办 进行中 | 完成 取消。也支持文件内的 #+TODO: 声明。",
+  "settings.todoKeywordsPlaceholder": "例如：待办 进行中 | 完成 取消",
   "settings.livePreview": "实时预览",
   "settings.livePreviewDesc": "编辑时按 Obsidian 渲染 Markdown 的方式渲染 Org 语法。",
   "settings.renderTables": "渲染表格",

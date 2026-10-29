@@ -16,6 +16,7 @@ import {
 } from "./i18n";
 import type { PrismLike } from "./org/highlight";
 import { setPrismInstance } from "./org/highlight";
+import { configureTodoKeywordExtras } from "./org/todoKeywords";
 import { OrgOutlineBridge } from "./integration/outline";
 import { DEFAULT_SETTINGS, OrgLiveSettings } from "./settings";
 import { OrgView } from "./view/OrgView";
@@ -34,6 +35,7 @@ export default class OrgLivePlugin extends Plugin {
 
   async onload(): Promise<void> {
     await this.loadSettings();
+    configureTodoKeywordExtras(this.settings.todoKeywords);
 
     this.outline = new OrgOutlineBridge(this.app, this);
     this.outline.start();
@@ -106,6 +108,7 @@ export default class OrgLivePlugin extends Plugin {
   }
 
   async saveSettings(options: { refreshEditors?: boolean } = {}): Promise<void> {
+    configureTodoKeywordExtras(this.settings.todoKeywords);
     await this.saveData(this.settings);
     this.refreshCommandNames();
     for (const leaf of this.app.workspace.getLeavesOfType(VIEW_TYPE_ORG)) {
@@ -156,6 +159,15 @@ class OrgLiveSettingTab extends PluginSettingTab {
             en: this.plugin.t("settings.languageEn"),
             zh: this.plugin.t("settings.languageZh"),
           },
+        },
+      },
+      {
+        name: this.plugin.t("settings.todoKeywords"),
+        desc: this.plugin.t("settings.todoKeywordsDesc"),
+        control: {
+          type: "text",
+          key: "todoKeywords",
+          placeholder: this.plugin.t("settings.todoKeywordsPlaceholder"),
         },
       },
       {

@@ -12,13 +12,14 @@ Org Live 让 Obsidian 原生打开、编辑和阅读 `.org` 文件，并尽量�
 - **实时预览**：光标不在某处时隐藏 Org 标记，像 Markdown 一样渲染；光标进入时恢复可编辑原文。
 - **阅读视图**：视图右上角的书本/铅笔按钮切换。
 - **结构**：标题、TODO/自定义 TODO 关键字、优先级、标签、计划行、属性抽屉、`#+KEYWORD` 元数据、表格、代码/引用/示例/居中/verse 块、注释、固定宽度、水平线。
+- **自定义 TODO 关键字**：在 设置 → Org Live 中配置额外的活动/完成关键字，或在文件内用 `#+TODO:` / `#+SEQ_TODO:` / `#+TYP_TODO:` 声明。支持 `TODO(t)`、`WAIT(w@/!)`、`DONE(d!)` 这类 fast-access 写法；内置关键字仍然可用。
 - **内联语法**：粗体、斜体、下划线、verbatim、行内代码、删除线、链接、裸 URL、时间戳、脚注引用、cookie。
 - **数学**：Org `$...$` / `$$...$$`、LaTeX `\(...\)` / `\[...\]`，以及裸的显示环境（`\begin{align}`、`equation`、`gather`、`multline`、`alignat`、`eqnarray`），支持多行块。光标进入时显示原文，移出后重新渲染。
 - **交互**：复选框点击并保存、内部链接、标签搜索、表格单元格点击回到原文、TODO 循环、列表续行与缩进。
 - **代码块折叠**：通过行内箭头折叠 `#+BEGIN_SRC` / `#+END_SRC`，以及 quote/example/center/verse/comment/export 块；也支持 `Ctrl/Cmd-Shift-[` 和 `]`。编辑和撤销不会改变文档内容。
 - **核心 Outline**：Org 标题会出现在 Obsidian 的 Outline 面板中，保留层级、TODO 关键字和中文标题；点击即可跳转到对应标题。Markdown 的 Outline 继续使用 Obsidian 原生实现。
 - **双语设置**：自动 / English / 中文。命令名称和视图操作标签会即时更新。
-- **移动端**：`isDesktopOnly: false`；iOS 使用原生选择；安全区/工具栏留白；触摸尺寸复选框；表格横向滚动；代码按 Markdown 实时预览的方式折行。
+- **移动端**：`isDesktopOnly: false`；iOS 使用原生选择；安全区/工具栏留白；更大的 TODO 状态徽章；触摸尺寸复选框；表格横向滚动；代码按 Markdown 实时预览的方式折行。
 - **中文友好**：Unicode 标签（`:中文:测试:`）、自定义中文 TODO 关键字（`#+TODO: 待办 | 完成`）、CJK 强调边界。
 
 ## 与 Markdown 的视觉互通
@@ -55,7 +56,7 @@ Org 特有概念（TODO、优先级、计划行、抽屉/元数据卡片、时�
 
 ### 社区插件市场
 
-0.2.3 的仓库和 release 已满足目录要求。Obsidian 当前使用 <https://community.obsidian.md> 门户提交，需要登录 Obsidian 账号并授权 GitHub；门户提交尚未完成。审核通过前请使用 BRAT 或手动安装。完整清单和步骤见 [`docs/community-submission.md`](docs/community-submission.md)。
+0.2.4 的仓库和 release 已满足目录要求。Obsidian 当前使用 <https://community.obsidian.md> 门户提交，需要登录 Obsidian 账号并授权 GitHub；门户提交尚未完成。审核通过前请使用 BRAT 或手动安装。完整清单和步骤见 [`docs/community-submission.md`](docs/community-submission.md)。
 
 ### 手动安装
 
@@ -104,6 +105,7 @@ Org 特有概念（TODO、优先级、计划行、抽屉/元数据卡片、时�
   - `Org Live: 进入实时预览`
 - 设置：
   - 界面语言
+  - 自定义 TODO 关键字（`进行中 待办 | 完成 取消`；也支持文件内 `#+TODO:`）
   - 实时预览
   - 渲染表格
   - 渲染数学

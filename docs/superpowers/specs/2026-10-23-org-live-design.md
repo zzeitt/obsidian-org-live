@@ -190,9 +190,14 @@ applied to every cell. Rules still split header and body rows.
 Inline: emphasis, verbatim/code, links (`[[target][desc]]` and `[[target]]`),
 bare URLs, timestamps, footnote references, cookies, math (`$…$`, `$$…$$`,
 `\(…\)`, `\[…\]`) and tags. CJK characters count as emphasis boundaries, and
-tags accept Unicode letters/numbers. TODO keywords come from the default set
-plus `#+TODO:`/`#+SEQ_TODO:`/`#+TYP_TODO:` declarations, so Chinese keywords
-work.
+tags accept Unicode letters/numbers. TODO keywords come from the built-in set,
+the plugin setting (settings → Org Live → Custom TODO keywords), and
+`#+TODO:`/`#+SEQ_TODO:`/`#+TYP_TODO:` declarations. Declarations may use Org
+fast-access/state-logging forms such as `TODO(t)`, `WAIT(w@/!)` and `DONE(d!)`;
+the parenthesized suffix is stripped before matching. Chinese keywords and
+custom keywords therefore work in both live preview and reading view. A global
+keyword-set version invalidates parser caches and refreshes the Outline when
+settings change.
 
 Display math also accepts multi-line blocks: `$$…$$`, `\[…\]`, multi-line
 `\(…\)`, and bare LaTeX display environments (`align`, `align*`, `equation`,
@@ -249,6 +254,8 @@ settings tab.
   Markdown live preview (`white-space: break-spaces`).
 - The code-block language flair has a reserved 2.4em header line so absolute
   positioning cannot overlap wrapped code.
+- TODO badges use a larger mobile size (about 12 px, 20 px high) and middle
+  vertical alignment so they remain legible inside wrapped headlines.
 - Actual iPhone keyboard/selection testing remains a device-level check; this
   repository verifies a 390×844 viewport and mobile CSS.
 
@@ -288,6 +295,9 @@ settings tab.
 ## Settings
 
 - `language` — Auto / English / 中文.
+- `todoKeywords` — extra active/done keywords in the form
+  `active1 active2 | done1 done2`; additive to built-ins and file-level
+  `#+TODO:` declarations.
 - `livePreview` — disable decorations and edit raw text.
 - `renderTables` — table widgets vs. raw styled rows.
 - `renderMath` — MathJax vs. source.

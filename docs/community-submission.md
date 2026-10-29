@@ -14,11 +14,11 @@ yet. BRAT remains the install path until the portal review is complete.
 - `README.md`, `LICENSE`, and `manifest.json` at the repo root.
 - Manifest at `main` HEAD:
   - `id`: `org-live` (unique, does not contain “obsidian”)
-  - `version`: `0.2.3`
+  - `version`: `0.2.4`
   - `minAppVersion`: `1.13.0`
   - `isDesktopOnly`: false
-- Git tag `0.2.3` matches the manifest version.
-- GitHub release `0.2.3` contains only the assets Obsidian downloads:
+- Git tag `0.2.4` matches the manifest version.
+- GitHub release `0.2.4` contains only the assets Obsidian downloads:
   - `main.js`
   - `manifest.json`
   - `styles.css`

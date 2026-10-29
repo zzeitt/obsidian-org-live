@@ -1,16 +1,17 @@
 import { EditorState, Text } from "@codemirror/state";
 import { foldedRanges } from "@codemirror/language";
 import { BlockType, OrgDoc, parseOrgDoc } from "../org/parse";
+import { getTodoKeywordVersion } from "../org/todoKeywords";
 
-const docCache = new WeakMap<Text, OrgDoc>();
+const docCache = new WeakMap<Text, { version: number; doc: OrgDoc }>();
 
 export function orgDocForText(text: Text): OrgDoc {
-  let cached = docCache.get(text);
-  if (!cached) {
-    cached = parseOrgDoc(text.toString());
-    docCache.set(text, cached);
-  }
-  return cached;
+  const version = getTodoKeywordVersion();
+  const cached = docCache.get(text);
+  if (cached && cached.version === version) return cached.doc;
+  const doc = parseOrgDoc(text.toString());
+  docCache.set(text, { version, doc });
+  return doc;
 }
 
 export interface OrgFoldInfo {

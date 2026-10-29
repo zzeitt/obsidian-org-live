@@ -12,13 +12,14 @@ Org Live opens, edits and reads `.org` files natively in Obsidian, with the same
 - **Live preview** — raw Org markup is revealed only around the cursor; everything else renders like Markdown.
 - **Reading view** — toggle with the book/pencil action in the view header.
 - **Org structure** — headlines, TODO/custom TODO keywords, priorities, tags, planning lines, property drawers, `#+KEYWORD` metadata, tables, source/quote/example/center/verse blocks, comments, fixed-width text and rules.
+- **Custom TODO keywords** — configure extra active/done keywords in Settings → Org Live, or per file with `#+TODO:` / `#+SEQ_TODO:` / `#+TYP_TODO:`. Fast-access declarations such as `TODO(t)`, `WAIT(w@/!)` and `DONE(d!)` are supported. Built-in keywords remain available.
 - **Inline syntax** — bold, italic, underline, verbatim, code, strike, links, bare URLs, timestamps, footnote references and cookies.
 - **Math** — Org `$...$` / `$$...$$`, LaTeX `\(...\)` / `\[...\]`, and bare display environments (`\begin{align}`, `equation`, `gather`, `multline`, `alignat`, `eqnarray`), including multi-line blocks. Edit the raw lines by placing the cursor inside; move away to render again.
 - **Interactions** — clickable checkboxes that save, internal links, tag search, table-cell click-to-edit, TODO cycling, list continuation and indentation.
 - **Code block folding** — fold `#+BEGIN_SRC` / `#+END_SRC` and quote/example/center/verse/comment/export blocks from an inline chevron. `Ctrl/Cmd-Shift-[` and `]` also fold/unfold. Editing and undo never alter the document.
 - **Core Outline** — Org headlines appear in Obsidian's Outline pane with their hierarchy, TODO keyword and Chinese titles. Click an item to jump to the headline. Markdown outlines continue to use Obsidian's native implementation.
 - **Bilingual settings** — Automatic / English / 中文. Command names and view-action labels update immediately.
-- **Mobile ready** — `isDesktopOnly: false`, native selection on iOS, safe-area/toolbar padding, touch-sized checkboxes, horizontally scrollable tables and Markdown-style code wrapping.
+- **Mobile ready** — `isDesktopOnly: false`, native selection on iOS, safe-area/toolbar padding, larger TODO badges, touch-sized checkboxes, horizontally scrollable tables and Markdown-style code wrapping.
 - **Chinese friendly** — Unicode tags (`:中文:测试:`), custom Chinese TODO keywords (`#+TODO: 待办 | 完成`), CJK emphasis boundaries.
 
 ## Native Markdown visual parity
@@ -55,7 +56,7 @@ Requires Obsidian **1.13.0+** (declarative settings APIs). iOS/Android are suppo
 
 ### Community marketplace
 
-The 0.2.3 release and repository meet the directory prerequisites. Obsidian's
+The 0.2.4 release and repository meet the directory prerequisites. Obsidian's
 current submission process uses the <https://community.obsidian.md> portal,
 which requires an Obsidian account login and GitHub connection; portal
 submission is pending. Until the plugin is admitted, use BRAT or a manual
@@ -109,6 +110,7 @@ The whole settings page, the reading-view action label and the three commands ar
   - `Org Live: Enter live preview`
 - Settings:
   - Interface language
+  - Custom TODO keywords (`active1 active2 | done1 done2`; file-level `#+TODO:` also works)
   - Live preview
   - Render tables
   - Render math
