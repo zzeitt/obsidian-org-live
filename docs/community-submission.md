@@ -1,12 +1,18 @@
 # Community marketplace submission
 
-Status: **prepared, portal submission pending an Obsidian account login**.
+Status: **submitted and listed** at
+<https://community.obsidian.md/plugins/org-live>.
 
-The old `obsidianmd/obsidian-releases` pull-request flow is deprecated. Obsidian
-now uses the **community.obsidian.md** portal, which requires signing in with an
-Obsidian account and connecting a GitHub account. That interactive account step
-cannot be completed from this CLI environment, so no marketplace listing exists
-yet. BRAT remains the install path until the portal review is complete.
+The directory page was live with 0.2.3 when this note was updated; 0.2.4 is
+published and will propagate from GitHub releases. Obsidian's built-in Browse
+view may cache the directory for a while — restart the app if a new version or
+the plugin itself is not yet searchable. BRAT and manual install remain
+fallbacks.
+
+The old `obsidianmd/obsidian-releases` pull-request flow is deprecated.
+Obsidian uses the **community.obsidian.md** portal, which requires an Obsidian
+account and GitHub connection; that account step was completed by the
+maintainer.
 
 ## Verified prerequisites
 

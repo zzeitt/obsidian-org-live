@@ -41,7 +41,17 @@ Org-only concepts (TODO, priority, planning, drawers/metadata cards, timestamps,
 
 ## Install
 
-### BRAT (recommended for beta and mobile)
+### Community plugins
+
+1. **Settings → Community plugins → Browse**.
+2. Search for **Org Live** and install it.
+3. Enable **Org Live** and disable any other plugin that owns `.org` files.
+
+The directory reads the latest GitHub release automatically. If the built-in
+browser has not synced yet, restart Obsidian or use BRAT/manual install below.
+Requires Obsidian **1.13.0+**.
+
+### BRAT (useful for beta builds and mobile)
 
 1. Install **BRAT** from Obsidian's community plugins.
 2. In BRAT choose **Add Beta Plugin** and enter:
@@ -54,14 +64,13 @@ Org-only concepts (TODO, priority, planning, drawers/metadata cards, timestamps,
 
 Requires Obsidian **1.13.0+** (declarative settings APIs). iOS/Android are supported.
 
-### Community marketplace
+### Marketplace listing
 
-The 0.2.4 release and repository meet the directory prerequisites. Obsidian's
-current submission process uses the <https://community.obsidian.md> portal,
-which requires an Obsidian account login and GitHub connection; portal
-submission is pending. Until the plugin is admitted, use BRAT or a manual
-install. See [`docs/community-submission.md`](docs/community-submission.md) for
-the checklist and exact steps.
+Org Live is listed in the community directory:
+<https://community.obsidian.md/plugins/org-live>. The directory page and
+Obsidian's built-in browser can lag behind a new release; the listing updates
+from GitHub releases. See
+[`docs/community-submission.md`](docs/community-submission.md) for details.
 
 ### Manual install
 

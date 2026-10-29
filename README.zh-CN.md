@@ -41,7 +41,15 @@ Org 特有概念（TODO、优先级、计划行、抽屉/元数据卡片、时�
 
 ## 安装
 
-### BRAT（推荐，尤其适合手机）
+### 社区插件市场
+
+1. **设置 → 第三方插件 → 浏览**。
+2. 搜索 **Org Live** 并安装。
+3. 启用 **Org Live**，并禁用其他接管 `.org` 的插件。
+
+目录会自动读取最新的 GitHub release。如果内置浏览器还没同步，重启 Obsidian，或使用下面的 BRAT / 手动安装。需要 Obsidian **1.13.0+**。
+
+### BRAT（适合测试版和手机）
 
 1. 从 Obsidian 社区插件安装 **BRAT**。
 2. 在 BRAT 中选择 **Add Beta Plugin**，输入：
@@ -54,9 +62,9 @@ Org 特有概念（TODO、优先级、计划行、抽屉/元数据卡片、时�
 
 需要 Obsidian **1.13.0+**（声明式设置 API）。支持 iOS/Android。
 
-### 社区插件市场
+### 市场页面
 
-0.2.4 的仓库和 release 已满足目录要求。Obsidian 当前使用 <https://community.obsidian.md> 门户提交，需要登录 Obsidian 账号并授权 GitHub；门户提交尚未完成。审核通过前请使用 BRAT 或手动安装。完整清单和步骤见 [`docs/community-submission.md`](docs/community-submission.md)。
+Org Live 已列入社区目录：<https://community.obsidian.md/plugins/org-live>。目录页面和 Obsidian 内置浏览器可能晚于新 release 同步；条目会根据 GitHub release 自动更新。详见 [`docs/community-submission.md`](docs/community-submission.md)。
 
 ### 手动安装
 
